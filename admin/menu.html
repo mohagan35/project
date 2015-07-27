@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Admin - Menu</title>
+        <link href="style.css" rel="stylesheet" type="text/css"></link>
+        <script>
+            var folder = document.URL.substr(0,document.URL.lastIndexOf('/'));
+        </script>
+    </head>
+    <body>
+        <div class='container'>
+            <h1>Admin Portal</h1>
+            <p>
+            <table class='menu'>
+                <tr class='menu'><td><button onmouseup="location.href=folder + '/create/'">CREATE NEW TASK</button></td></tr>
+                <tr class='menu'><td><button>EDIT TASK</button></td></tr>
+                <tr class='menu'><td></td></tr>
+                <tr class='menu'><td></td></tr>
+                <tr class='menu'><td><button>VIEW DATA</button></td></tr>
+                <tr class='menu'><td></td></tr>
+                <tr class='menu'><td></td></tr>
+                <tr class='menu'><td><button>LOG OUT</button></td></tr>
+            </table>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,103 @@
+div.container { 
+    width: 400px;
+    height: 400px;
+    margin-left: -200px;
+    margin-top: -200px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    text-align: center;
+    font-family: Verdana, Geneva, sans-serif;
+    color: rgb(58, 58, 60);
+    border: solid;
+    border-color: rgb(231, 231, 231);
+    border-radius: 5px;
+    background-color: rgb(250, 250, 250);
+}
+
+table
+{
+    position: relative;
+    width: 300px;
+    left: 50px;
+    text-align: right;
+}
+
+table.menu
+{
+    position: relative;
+    width: 240px;
+    left: 80px;
+    text-align: right;
+}
+
+tr.menu > td
+{
+    padding-bottom: 11px;
+}
+
+input.submit
+{
+    position: relative;
+    top: 9px;
+    height: 42px;
+    width: 74px;
+    border-radius: 4px;
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 8pt;
+    font-weight: bold;
+    color: rgb(58, 58, 60);
+    background-color: rgb(238, 238, 238);
+    border-top: none;
+    border-left: 1px solid rgb(226, 226, 226);
+    border-right: 1px solid rgb(226, 226, 226);
+    border-bottom: 4px solid rgb(226, 226, 226);
+    cursor: pointer; 
+}
+input.submit:hover
+{
+    padding-top: 2px;
+    border-bottom: 3px solid rgb(226, 226, 226);
+}
+input.submit:active
+{
+    padding-top: 3px;
+    border-bottom: 2px solid rgb(226, 226, 226);
+}
+input.submit:focus
+{
+    outline: 0;
+}
+
+button
+{
+    position: relative;
+    top: 9px;
+    height: 42px;
+    width: 240px;
+    border-radius: 4px;
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 8pt;
+    font-weight: bold;
+    color: rgb(58, 58, 60);
+    background-color: rgb(238, 238, 238);
+    border-top: none;
+    border-left: 1px solid rgb(226, 226, 226);
+    border-right: 1px solid rgb(226, 226, 226);
+    border-bottom: 4px solid rgb(226, 226, 226);
+    cursor: pointer; 
+}
+button:hover
+{
+    padding-top: 2px;
+    border-bottom: 3px solid rgb(226, 226, 226);
+}
+button:active
+{
+    padding-top: 3px;
+    border-bottom: 2px solid rgb(226, 226, 226);
+}
+button:focus
+{
+    outline: 0;
+}

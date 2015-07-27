@@ -1,0 +1,10 @@
+<!doctype html><html><head><title>Test</title>         <script src='/js/jquery.js'></script>         <script src='/js/jspsych/jspsych.js'></script>         <script src='/js/jspsych/plugins/jspsych-single-stim.js'></script>         <script src='/js/jspsych/plugins/jspsych-categorize.js'></script>         <script src='/js/jspsych/plugins/jspsych-text.js'></script>         <script src='/js/jspsych/plugins/jspsych-instructions.js'></script>         <script>var pagesArray = [];
+var stim1 = { image: 'assets/RoomRender11.jpg',data: { Size: 'BiggerLeft', Congruent: 'Yes' } };
+var stimTrialsImages = [stim1.image, stim1.image];
+var stimTrialsData = [stim1.data, stim1.data];
+var answersTrials = [37, 37];
+var Introduction_introduction_block = { type: 'text', text: 'WELCOME' };
+var Trials_introduction_block = { type: 'text', text: 'TEST' };
+var Trials_test_block = {type: 'categorize',stimuli: stimTrialsImages,key_answer: answersTrials,text_answer: '',data: stimTrialsData,choices: [37, 39],correct_text: '', incorrect_text: '', timeout_message: '<img src="assets/site_logo.png">',is_html: false,timing_feedback_duration: 90,timing_response: 90,timing_stim: 90 };
+var Submit_introduction_block = { type: 'text', text: 'BYE' };
+var blocks = [Introduction_introduction_block, Trials_introduction_block, Trials_test_block, Submit_introduction_block];</script><link href='/js/jspsych/css/jspsych.css' rel='stylesheet' type='text/css'></link>     </head><body></body>     <script>     jsPsych.init({         experiment_structure: blocks,         on_finish: function() {             jsPsych.data.displayData();         }     })     </script> </html>

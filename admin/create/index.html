@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Admin - Create New Task</title>
+        <script src="create_data_collection.js"></script>
+        <script src="create_validation.js"></script>
+        <script src="create_content_constructor.js"></script>
+        <script src="create_content.js"></script>
+        <link href="style.css" rel="stylesheet" type="text/css"></link>
+    </head>
+    <body>
+        <div class='header'><h1>Create New Task</h1><button class='menu' onmouseup="location.href='../menu.html'">MAIN MENU</button> </div>
+        <div class='container'>
+            <p>
+            <form id='create_form'>
+                <div class='form_element_container' id='General_container'>
+                    <div class='form_element' id='General_background_prompt'>
+                        Would you like to upload a master background image?
+                        <p>Yes<input type='radio' name='master_background' value='yes' onclick="backgroundToggle('General', 'yes')">
+                        <p>No<input type='radio' name='master_background' value='no' onclick="backgroundToggle('General', 'no')">
+                        <p><i>NOTE: Default background colour is white.</i>
+                    </div>
+                    <div class='break'></div>
+                    <div class='form_element_container' id='General_background_container'></div>
+                </div>
+            </form>
+        </div>
+        <div class='footer' id='footer'></div>
+    </body>
+</html>
