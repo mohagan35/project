@@ -13,7 +13,7 @@ var stimTrialsData = [stim5.data, stim2.data, stim4.data, stim1.data, stim3.data
 var answersExample = [90];
 var answersPractice = [77, 90, 77, 77, 90, 90];
 var answersTrials = [77, 90, 77, 77, 90, 90, 77, 90, 77, 77, 90, 77];
-var Introduction_introduction_block = { type: 'text', text: '<script>alert(audioContainer.querySelector("#a0").buffered.end(0));audioContainer.querySelector("#a0").play();document.getElementById("body").appendChild(audioContainer.querySelector("#a0"));</scr' + 'ipt><p>Press any key to continue...' };
+var Introduction_introduction_block = { type: 'text', text: '<script>audioContainer.querySelector("#a0").play();document.getElementById("body").appendChild(audioContainer.querySelector("#a0"));</scr' + 'ipt><p>Press any key to continue...' };
 var Example_introduction_block = { type: 'text', text: 'No audio. Press any key to continue to examples...' };
 var Example_test_block = {type: 'categorize',stimuli: stimExampleImages,key_answer: answersExample,text_answer: '',data: stimExampleData,choices: [90, 77],correct_text: '<script>audioContainer.querySelector("#a3").pause();audioContainer.querySelector("#a2").play();</scr' + 'ipt><img src="assets/small-smiley-face.png">', incorrect_text: '<script>audioContainer.querySelector("#a3").pause();audioContainer.querySelector("#a6").play();</scr' + 'ipt><img src="assets/small-unhappy-face.png">',timing_feedback_duration: 2500,is_html: true };
 var Practice_introduction_block = { type: 'text', text: '<script>audioContainer.querySelector("#a4").play();document.getElementById("body").appendChild(audioContainer.querySelector("#a4"));</scr' + 'ipt><p>Press any key to continue...' };
