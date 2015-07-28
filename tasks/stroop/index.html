@@ -30,10 +30,11 @@ var blocks = [Introduction_introduction_block, Example_introduction_block, Examp
 
 <script>
     var audio = ['assets/intro-stroop-15750.wav','assets/too-slow.wav','assets/well-done.wav','assets/example.wav','assets/practise-animals-13500.wav','assets/start-properly-8750.wav', 'assets/wrong-button.wav'];
-    var images = ['assets/small-smiley-face.png',,'assets/small-unhappy-face.png','assets/bigbig.jpg', 'assets/bigsmall.jpg','assets/unhappy-face.png', 'assets/Bsmallsmall.jpg', 'assets/smallbig.jpg', 'assets/smallBsmall.jpg'];
+    var images = ['assets/small-smiley-face.png','assets/small-unhappy-face.png','assets/bigbig.jpg', 'assets/bigsmall.jpg','assets/unhappy-face.png', 'assets/Bsmallsmall.jpg', 'assets/smallbig.jpg', 'assets/smallBsmall.jpg'];
     
     var i = 0;
-    var a, d, z, j, percentage;
+    var a, d, z, j
+    var percentage = 0;
     
     var myInterval = window.setInterval(loadAudio, 200);
     var audioContainer = document.createElement("div");
@@ -47,7 +48,10 @@ var blocks = [Introduction_introduction_block, Example_introduction_block, Examp
         if (z !== undefined) {
             percentage = (z / d) * 100;
         }
-        document.getElementById("textBox").innerHTML = "" + i + " of " + audio.length + " audio files loaded. + <br>" + percentage + "%";
+        document.getElementById("textBox").innerHTML = "" + i + " of " + audio.length + " audio files loaded.";
+        if (isNaN(percentage) === false) {
+            document.getElementById("textBox").innerHTML += "<br>" + percentage + "%";
+        }
         
         if ((z === d && z !== undefined) || (z > 13)) {
             i += 1;
