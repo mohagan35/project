@@ -33,7 +33,7 @@ var blocks = [Introduction_introduction_block, Example_introduction_block, Examp
     var images = ['assets/small-smiley-face.png',,'assets/small-unhappy-face.png','assets/bigbig.jpg', 'assets/bigsmall.jpg','assets/unhappy-face.png', 'assets/Bsmallsmall.jpg', 'assets/smallbig.jpg', 'assets/smallBsmall.jpg'];
     
     var i = 0;
-    var a, d, z, j;
+    var a, d, z, j, percentage;
     
     var myInterval = window.setInterval(loadAudio, 200);
     var audioContainer = document.createElement("div");
@@ -44,10 +44,15 @@ var blocks = [Introduction_introduction_block, Example_introduction_block, Examp
         try {
             z = a.buffered.end(0);
         } catch (e) {}
-        document.getElementById("textBox").innerHTML = "" + i + " of " + audio.length + " audio files loaded.";
+        if (z !== undefined) {
+            percentage = (z / d) * 100;
+        }
+        document.getElementById("textBox").innerHTML = "" + i + " of " + audio.length + " audio files loaded. + <br>" + percentage + "%";
         
         if ((z === d && z !== undefined) || (z > 13)) {
             i += 1;
+            z = 0;
+            percentage = 0;
             if (i < audio.length) {
                 document.getElementById("body").innerHTML += '\n<audio id="a' + i + '" preload="auto" hidden><source src="' + audio[i] + '"></audio>';
             }
