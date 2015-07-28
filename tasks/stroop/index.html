@@ -72,7 +72,15 @@ var blocks = [Introduction_introduction_block, Example_introduction_block, Examp
     }
     
     function onAudioLoad() {
-jsPsych.preloadImages(images, function(){ startExperiment(); }, function(nLoaded) { updateLoadedCount(nLoaded); });    function updateLoadedCount(nLoaded){        document.getElementById("body").innerHTML = '' + nLoaded + ' of ' + images.length + ' image files loaded.';    }    jsPsych.init({         experiment_structure: blocks,         on_finish: function() {             jsPsych.data.displayData();         }     })
-    }
+        jsPsych.preloadImages(images, function(){ startExperiment(); }, 
+        function(nLoaded) { updateLoadedCount(nLoaded); });
+        
+        function updateLoadedCount(nLoaded){        
+            document.getElementById("body").innerHTML = '' + nLoaded + ' of ' + images.length + ' image files loaded.';
+        }
+        
+        function startExperiment() {
+            jsPsych.init({         experiment_structure: blocks,         on_finish: function() {                    jsPsych.data.displayData();         }     });
+        }
 
 </script> </html>
