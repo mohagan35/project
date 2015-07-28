@@ -21,5 +21,54 @@ var Practice_test_block = {type: 'categorize',stimuli: stimPracticeImages,key_an
 var Trials_introduction_block = { type: 'text', text: '<audio hidden autoplay><source src="assets/start-properly-8750.wav"></audio><p>Press any key to continue...' };
 var Trials_test_block = {type: 'single-stim',stimuli: stimTrialsImages,data: stimTrialsData,choices: [90, 77],is_html: false,timing_response: 1250,timing_stim: 1250 };
 var Submit_introduction_block = { type: 'text', text: 'THE END. (no audio).' };
-var blocks = [Introduction_introduction_block, Example_introduction_block, Example_test_block, Practice_introduction_block, Practice_test_block, Trials_introduction_block, Trials_test_block, Submit_introduction_block];</script><link href='js/jspsych/css/jspsych.css' rel='stylesheet' type='text/css'></link>     </head><body id='body' ></body><script>var assets = ['assets/intro-stroop-15750.wav','assets/well-done.wav','assets/small-smiley-face.png','assets/wrong-button.wav','assets/small-unhappy-face.png','assets/example.wav','assets/bigsmall.jpg','assets/practise-animals-13500.wav','assets/too-slow.wav','assets/unhappy-face.png','assets/start-properly-8750.wav'];
-jsPsych.preloadImages(assets, function(){ startExperiment(); }, function(nLoaded) { updateLoadedCount(nLoaded); });    function updateLoadedCount(nLoaded){        document.getElementById("body").innerHTML = '' + nLoaded + ' of ' + assets.length + ' assets loaded.';    }    jsPsych.init({         experiment_structure: blocks,         on_finish: function() {             jsPsych.data.displayData();         }     })     </script> </html>
+var blocks = [Introduction_introduction_block, Example_introduction_block, Example_test_block, Practice_introduction_block, Practice_test_block, Trials_introduction_block, Trials_test_block, Submit_introduction_block];</script><link href='js/jspsych/css/jspsych.css' rel='stylesheet' type='text/css'></link>     </head><body id='body' >
+<audio id="a0" preload="auto" hidden>
+    <source src="assets/intro-stroop-15750.wav">
+</audio>
+<audio id="a1" preload="auto" hidden>
+    <source src="assets/intro-stroop-15750.wav">
+</audio>
+<audio id="a2" preload="auto" hidden>
+    <source src="assets/well-done.wav">
+</audio>
+<audio id="a3" preload="auto" hidden>
+    <source src="assets/example.wav">
+</audio>
+<audio id="a4" preload="auto" hidden>
+    <source src="assets/practise-animals-13500.wav">
+</audio>
+<audio id="a5" preload="auto" hidden>
+    <source src="assets/start-properly-8750.wav">
+</audio>
+<div id='textBox' class='jspsych-display-element'></div>
+</body>
+
+<script>
+    var audio = ['assets/intro-stroop-15750.wav','assets/well-done.wav','assets/example.wav','assets/practise-animals-13500.wav','assets/too-slow.wav','assets/start-properly-8750.wav'];
+    var images = ['assets/small-smiley-face.png','assets/wrong-button.wav','assets/small-unhappy-face.png','assets/bigsmall.jpg','assets/unhappy-face.png'];
+    
+    var i = 0;
+    var a, d, z;
+    
+    var myInterval = window.setInterval(loadAudio, 200);
+    
+    function loadAudio() {
+        a = document.getElementById("a" + i);
+        d = a.duration;
+        z = a.buffered.end(0);
+        document.getElementById("textBox").innerHTML = "" + i + " of " + audio.length + " sounds loaded.";
+        
+        if ((z === d && z !== undefined) || (z > 13)) {
+            i += 1;
+            if (i === audio.length-1) {
+                window.clearInterval(myInterval);
+                onAudioLoad();
+            }
+        }
+    }
+    
+    function onAudioLoad() {
+jsPsych.preloadImages(images, function(){ startExperiment(); }, function(nLoaded) { updateLoadedCount(nLoaded); });    function updateLoadedCount(nLoaded){        document.getElementById("body").innerHTML = '' + nLoaded + ' of ' + images.length + ' images loaded.';    }    jsPsych.init({         experiment_structure: blocks,         on_finish: function() {             jsPsych.data.displayData();         }     }) 
+    }
+
+</script> </html>
