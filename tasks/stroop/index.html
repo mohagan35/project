@@ -13,7 +13,7 @@ var stimTrialsData = [stim5.data, stim2.data, stim4.data, stim1.data, stim3.data
 var answersExample = [90];
 var answersPractice = [77, 90, 77, 77, 90, 90];
 var answersTrials = [77, 90, 77, 77, 90, 90, 77, 90, 77, 77, 90, 77];
-var Introduction_introduction_block = { type: 'text', text: '<script>audioContainer.querySelector("#a0").play();document.getElementById("body").appendChild(audioContainer.querySelector("#a0"));</scr' + 'ipt><p>Press any key to continue...' };
+var Introduction_introduction_block = { type: 'text', text: '<script>alert(audioContainer.querySelector("#a0").buffered.end(0));audioContainer.querySelector("#a0").play();document.getElementById("body").appendChild(audioContainer.querySelector("#a0"));</scr' + 'ipt><p>Press any key to continue...' };
 var Example_introduction_block = { type: 'text', text: 'No audio. Press any key to continue to examples...' };
 var Example_test_block = {type: 'categorize',stimuli: stimExampleImages,key_answer: answersExample,text_answer: '',data: stimExampleData,choices: [90, 77],correct_text: '<script>audioContainer.querySelector("#a3").pause();audioContainer.querySelector("#a2").play();</scr' + 'ipt><img src="assets/small-smiley-face.png">', incorrect_text: '<script>audioContainer.querySelector("#a3").pause();audioContainer.querySelector("#a6").play();</scr' + 'ipt><img src="assets/small-unhappy-face.png">',timing_feedback_duration: 2500,is_html: true };
 var Practice_introduction_block = { type: 'text', text: '<script>audioContainer.querySelector("#a4").play();document.getElementById("body").appendChild(audioContainer.querySelector("#a4"));</scr' + 'ipt><p>Press any key to continue...' };
@@ -33,8 +33,7 @@ var blocks = [Introduction_introduction_block, Example_introduction_block, Examp
     var images = ['assets/small-smiley-face.png','assets/small-unhappy-face.png','assets/bigbig.jpg', 'assets/bigsmall.jpg','assets/unhappy-face.png', 'assets/Bsmallsmall.jpg', 'assets/smallbig.jpg', 'assets/smallBsmall.jpg'];
     
     var i = 0;
-    var a, d, z, j
-    var percentage = 0;
+    var a, d, z, j;
     
     var myInterval = window.setInterval(loadAudio, 200);
     var audioContainer = document.createElement("div");
@@ -45,18 +44,11 @@ var blocks = [Introduction_introduction_block, Example_introduction_block, Examp
         try {
             z = a.buffered.end(0);
         } catch (e) {}
-        if (z !== undefined) {
-            percentage = (z / d) * 100;
-        }
         document.getElementById("textBox").innerHTML = "" + i + " of " + audio.length + " audio files loaded.";
-        if (isNaN(percentage) === false) {
-            document.getElementById("textBox").innerHTML += "<br>" + percentage + "%";
-        }
         
         if ((z === d && z !== undefined) || (z > 13)) {
             i += 1;
             z = 0;
-            percentage = 0;
             if (i < audio.length) {
                 document.getElementById("body").innerHTML += '\n<audio id="a' + i + '" preload="auto" hidden><source src="' + audio[i] + '"></audio>';
             }
@@ -76,7 +68,7 @@ var blocks = [Introduction_introduction_block, Example_introduction_block, Examp
         function(nLoaded) { updateLoadedCount(nLoaded); });
         
         function updateLoadedCount(nLoaded){        
-            document.getElementById("body").innerHTML = '' + nLoaded + ' of ' + images.length + ' image files loaded.';
+            document.getElementById("textBox").innerHTML = '' + nLoaded + ' of ' + images.length + ' image files loaded.';
         }
         
         function startExperiment() {
