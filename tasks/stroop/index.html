@@ -15,7 +15,7 @@ var answersPractice = [77, 90, 77, 77, 90, 90];
 var answersTrials = [77, 90, 77, 77, 90, 90, 77, 90, 77, 77, 90, 77];
 var Introduction_introduction_block = { type: 'text', text: '<script>audioContainer.querySelector("#a0").play();document.getElementById("body").appendChild(audioContainer.querySelector("#a0"));</scr' + 'ipt><p>Press any key to continue...' };
 var Example_introduction_block = { type: 'text', text: 'No audio. Press any key to continue to examples...' };
-var Example_test_block = {type: 'categorize',stimuli: stimExampleImages,key_answer: answersExample,text_answer: '',data: stimExampleData,choices: [90, 77],correct_text: '<script>audioContainer.querySelector("#a3").pause();audioContainer.querySelector("#a2").play();</scr' + 'ipt><img src="assets/small-smiley-face.png">', incorrect_text: '<script>audioContainer.querySelector("#a3").plause();audioContainer.querySelector("#a6").play();</scr' + 'ipt><img src="assets/small-unhappy-face.png">',timing_feedback_duration: 2500,is_html: true };
+var Example_test_block = {type: 'categorize',stimuli: stimExampleImages,key_answer: answersExample,text_answer: '',data: stimExampleData,choices: [90, 77],correct_text: '<script>audioContainer.querySelector("#a3").pause();audioContainer.querySelector("#a2").play();</scr' + 'ipt><img src="assets/small-smiley-face.png">', incorrect_text: '<script>audioContainer.querySelector("#a3").pause();audioContainer.querySelector("#a6").play();</scr' + 'ipt><img src="assets/small-unhappy-face.png">',timing_feedback_duration: 2500,is_html: true };
 var Practice_introduction_block = { type: 'text', text: '<script>audioContainer.querySelector("#a4").play();document.getElementById("body").appendChild(audioContainer.querySelector("#a4"));</scr' + 'ipt><p>Press any key to continue...' };
 var Practice_test_block = {type: 'categorize',stimuli: stimPracticeImages,key_answer: answersPractice,text_answer: '',data: stimPracticeData,choices: [90, 77],correct_text: '<script>audioContainer.querySelector("#a2").play();</scr' + 'ipt><img src="assets/small-smiley-face.png">', incorrect_text: '<script>audioContainer.querySelector("#a6").play();</scr' + 'ipt><img src="assets/small-unhappy-face.png">',timeout_message: '<script>audioContainer.querySelector("#a1").play();</scr' + 'ipt><img src="assets/unhappy-face.png">',is_html: false,timing_feedback_duration: 2500,timing_response: 1250,timing_stim: 1250 };
 var Trials_introduction_block = { type: 'text', text: '<script>audioContainer.querySelector("#a5").play();document.getElementById("body").appendChild(audioContainer.querySelector("#a5"));</scr' + 'ipt><p>Press any key to continue...' };
@@ -25,29 +25,11 @@ var blocks = [Introduction_introduction_block, Example_introduction_block, Examp
 <audio id="a0" preload="auto" hidden>
     <source src="assets/intro-stroop-15750.wav">
 </audio>
-<audio id="a1" preload="auto" hidden>
-    <source src="assets/too-slow.wav">
-</audio>
-<audio id="a2" preload="auto" hidden>
-    <source src="assets/well-done.wav">
-</audio>
-<audio id="a3" preload="auto" hidden>
-    <source src="assets/example.wav">
-</audio>
-<audio id="a4" preload="auto" hidden>
-    <source src="assets/practise-animals-13500.wav">
-</audio>
-<audio id="a5" preload="auto" hidden>
-    <source src="assets/start-properly-8750.wav">
-</audio>
-<audio id="a6" preload="auto" hidden>
-    <source src="assets/wrong-button.wav">
-</audio>
 <div id='textBox' class='jspsych-display-element'></div>
 </body>
 
 <script>
-    var audio = ['assets/intro-stroop-15750.wav','assets/well-done.wav','assets/example.wav','assets/practise-animals-13500.wav','assets/too-slow.wav','assets/start-properly-8750.wav', 'assets/wrong-button.wav'];
+    var audio = ['assets/intro-stroop-15750.wav','assets/too-slow.wav','assets/well-done.wav','assets/example.wav','assets/practise-animals-13500.wav','assets/start-properly-8750.wav', 'assets/wrong-button.wav'];
     var images = ['assets/small-smiley-face.png',,'assets/small-unhappy-face.png','assets/bigbig.jpg', 'assets/bigsmall.jpg','assets/unhappy-face.png', 'assets/Bsmallsmall.jpg', 'assets/smallbig.jpg', 'assets/smallBsmall.jpg'];
     
     var i = 0;
@@ -66,7 +48,10 @@ var blocks = [Introduction_introduction_block, Example_introduction_block, Examp
         
         if ((z === d && z !== undefined) || (z > 13)) {
             i += 1;
-            if (i === audio.length-1) {
+            if (i < audio.length) {
+                document.getElementById("body").innerHTML += '\n<audio id="a' + i + '" preload="auto" hidden><source src="' + audio[i] + '"></audio>';
+            }
+            else if (i === audio.length) {
                 window.clearInterval(myInterval);
                 
                 for (j = 0; j < audio.length; j += 1) {
