@@ -15,7 +15,7 @@ function checkFileExtension(str, type) {
         ext = filename.substring(filename.length - 4, filename.length),
         i,
         imageExt = [".png", ".PNG", ".jpg", ".JPG"],
-        audioExt = [".mp3", ".MP3", ".wav", ".WAV"];
+        audioExt = [".mp3", ".MP3"];
     
     if (type === "image") {
         for (i = 0; i < imageExt.length; i += 1) {
@@ -91,7 +91,6 @@ function doScrollTo() {
 function validateForm() {
     "use strict";
     clearHighlighted();
-    
     var i,
         j,
         congruentCheck = false,
@@ -306,7 +305,6 @@ function validateForm() {
             addHighlight(3, document.getElementById("Practice_trial_congruent_container"));
         }
     }
-    
     
     doScrollTo();
     if (scrollTo === null) {

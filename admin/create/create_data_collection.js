@@ -47,7 +47,7 @@ function initializeVars() {
                 z = a.buffered.end(0); \
             } catch (e) {} \
             document.getElementById('textBox').innerHTML = '' + i + ' of ' + audio.length + ' audio files loaded.'; \
-            if ((z === d && z !== undefined) || (z > 13)) { \
+            if ((z === d && z !== undefined) || (z > 50)) { \
                 i += 1; \
                 z = 0; \
                 if (i < audio.length) { \
@@ -143,7 +143,11 @@ function getNumberInputValue(name, type) {
         rightElement = document.getElementById(name + "_" + type + "_number_right"),
         leftElement = document.getElementById(name + "_" + type + "_number_left");
     
-    outputNum = 10 * parseInt(leftElement.value, 10) + parseInt(rightElement.value, 10);
+    if (rightElement !== null && leftElement !== null) {
+        outputNum = 10 * parseInt(leftElement.value, 10) + parseInt(rightElement.value, 10);
+    } else {
+        outputNum = -1;
+    }
     
     return outputNum;
 }
@@ -158,8 +162,9 @@ function downloadTextFile(text) {
 
     dlLink.setAttribute('download', 'index.html');
     dlLink.setAttribute('href', textFile);
+    dlLink.innerHTML = "Click here to download.";
     
-    dlLink.click();
+    document.getElementById("dlLink").innerHTML = dlLink.outerHTML;
 }
 
 function generateIntroBlock(name) {
@@ -577,7 +582,6 @@ function createTest() {
         
         i += 1;
     }
-    
     /**
     * Generate JS for blocks array
     * Generate JS for introductions blocks and final message block

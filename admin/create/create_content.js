@@ -15,7 +15,7 @@ window.onload = function () {
     "use strict";
     var footer = document.getElementById("footer"),
         footerRect = footer.getBoundingClientRect(),
-        diffY = document.body.scrollHeight - footerRect.top - 84;
+        diffY = window.innerHeight - footerRect.top - 84;
     
     document.getElementById("footer").style.top = diffY + 'px';
 };
@@ -720,7 +720,7 @@ function instructionsTypeChanged(name, type, pageNum) {
     } else if (name === "Results") {
         nextElement = createFormElement(name, "", "results_type");
     } else if (name === "Submit") {
-        nextElement = createFormElement(name, "_left", "input_textline", "<br><br><br><button class='proceed' type='button' onmouseup='validateForm()'>SUBMIT</button><div class='break'></div><div class='break'></div><div class='break'></div><i>NOTE: Place the downloaded html file in any new folder on your local server.<br>All assets must be placed in a folder called 'assets' within this folder.<p>Place your jQuery library and jsPsych library in a folder called 'js' in your chosen folder.<br>Make sure your jQuery and jsPsych folders are named 'jquery' and 'jspsych'. I.e. remove any version numbering from the name.</i>");
+        nextElement = createFormElement(name, "_left", "input_textline", "<br><br><br><button class='proceed' type='button' onmouseup='validateForm()'>SUBMIT</button><div class='break'></div><div class='break'></div><div class='break'></div><div id='dlLink'></div><p><br><i>NOTE: Place the downloaded html file in any new folder on your local server.<br>All assets must be placed in a folder called 'assets' within this folder.<p>Place your jQuery library and jsPsych library in a folder called 'js' in your chosen folder.<br>Make sure your jQuery and jsPsych folders are named 'jquery' and 'jspsych'. I.e. remove any version numbering from the name.</i>");
     } else {
         nextElement = createFormElement(name, "", "cue_prompt");
         nextContainer = createFormElement(name + "_cue", "_container", "container");

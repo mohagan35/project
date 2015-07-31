@@ -38,7 +38,7 @@ function createTrial(name, align, index, n) {
         
     element.innerHTML = "<b>" + name + " Trial " + index + ":</b><br><br>" +
                 "Stimulus: " + selectStim.outerHTML + "<p>Task: " + selectTask.outerHTML +
-                "<p>Choose an audio file (mp3, wav) to upload: <p><input type='file' id='" + element.id + "_file_" + index + "'>";
+                "<p>Choose an audio file (mp3) to upload: <p><input type='file' id='" + element.id + "_file_" + index + "'>";
 
     element.id += "_" + index;
     
@@ -185,7 +185,7 @@ function createFormElement(name, align, type, str) {
         if (str) {
             element.id += "_" + str;
         }
-        element.innerHTML = "Choose an audio file (mp3, wav) to upload:" +
+        element.innerHTML = "Choose an audio file (mp3) to upload:" +
                     "<p><input type='file' id='" + element.id + "_file'>";
         
         if (name.indexOf("feedback") > -1) {
