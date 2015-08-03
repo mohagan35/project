@@ -1,14 +1,10 @@
 <!doctype html><html><head><title>GONOGO</title>  
 <style media="screen" type="text/css">
 #jspsych-categorize-stimulus {
-    width: auto;
-    height: auto;
-    max-width: 100%;
-    max-height: 100%;
 }
 </style><script src='js/jquery.js'></script>             <script src='js/jspsych/jspsych.js'></script>             <script src='js/jspsych/plugins/jspsych-single-stim.js'></script>             <script src='js/jspsych/plugins/jspsych-categorize.js'></script>             <script src='js/jspsych/plugins/jspsych-text.js'></script>             <script src='js/jspsych/plugins/jspsych-instructions.js'></script>             <script>var pagesArray = [];
-var stim1 = { image: 'assets/bigbig.jpg',data: { GO_NOGO: 'Go', Congruent: 'Yes' } };
-var stim2 = { image: 'assets/bigsmall.jpg',data: { GO_NOGO: 'No', Congruent: 'Yes' } };
+var stim1 = { image: '<img src="assets/bigbig.jpg" style="width: 100%; max-height: 100%">',data: { GO_NOGO: 'Go', Congruent: 'Yes' } };
+var stim2 = { image: '<img src="assets/bigsmall.jpg" style="width: 100%; max-height: 100%">',data: { GO_NOGO: 'No', Congruent: 'Yes' } };
 var stimPracticeImages = [stim1.image, stim2.image, stim1.image, stim2.image, stim2.image, stim1.image];
 var stimTrialsImages = [stim1.image, stim2.image, stim1.image, stim2.image, stim1.image, stim2.image, stim1.image, stim2.image, stim1.image, stim2.image, stim1.image, stim2.image];
 var stimPracticeData = [stim1.data, stim2.data, stim1.data, stim2.data, stim2.data, stim1.data];
