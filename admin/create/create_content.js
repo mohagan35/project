@@ -148,6 +148,10 @@ function keyPressInput(e, input) {
             upperKey = "\u25BA";
         } else if (keynum === 40) { //down
             upperKey = "\u25BC";
+        } else if (keynum === 32) {
+            upperKey = "SPACE";
+        } else if (keynum === 13) {
+            upperKey = "ENTER";
         }
     }
     

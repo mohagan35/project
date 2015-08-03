@@ -22,6 +22,12 @@ function initializeVars() {
     output = "";
     html1 = "<!doctype html><html><head><title>";
     html2 = "</title> \
+            <style media='screen' type='text/css'> \
+            #jspsych-categorize-stimulus { \
+                width: 100%; \
+                height: 100%; \
+            } \
+            </style> \
             <script src='js/jquery.js'></script> \
             <script src='js/jspsych/jspsych.js'></script> \
             <script src='js/jspsych/plugins/jspsych-single-stim.js'></script> \
@@ -92,6 +98,10 @@ function setKeyChoices() {
             keyChoices.push(40);
         } else if (document.getElementById("General_value_table_td_" + i + "_1_input").value === "BLANK") {
             keyChoices.push(-1);
+        } else if (document.getElementById("General_value_table_td_" + i + "_1_input").value === "SPACE") {
+            keyChoices.push(32);
+        } else if (document.getElementById("General_value_table_td_" + i + "_1_input").value === "ENTER") {
+            keyChoices.push(13);
         } else {
             keyChoices.push(document.getElementById("General_value_table_td_" + i + "_1_input").value.charCodeAt(0));
         }
