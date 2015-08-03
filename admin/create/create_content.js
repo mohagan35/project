@@ -95,7 +95,26 @@ function keycodeToASCII(keynum) {
 }
 function keyInputFocus(input) {
     "use strict";
-    input.value = "Press a key...";
+    var pairID,
+        row = parseInt(input.id.substring(23, 24), 10);
+    
+    if (row % 2 === 0) {
+        row -= 1;
+    } else {
+        row += 1;
+    }
+    
+    pairID = input.id.substring(0, 23) + row + input.id.substring(24, input.id.length);
+    
+    if (document.getElementById(pairID)) {
+        if (document.getElementById(pairID).value !== "BLANK") {
+            input.value = "BLANK";
+        } else {
+            input.value = "";
+        }
+    } else {
+        input.value = "";
+    }
 }
 function keyPressInput(e, input) {
     "use strict";
@@ -148,7 +167,8 @@ function folderInput(name, e) {
     "use strict";
     var keynum,
         i,
-        bannedShiftKeyNums = [50, 56, 186, 188, 190];
+        bannedNonShiftKeyNums = [189, 187, 220, 191, 219, 221, 188, 190],
+        bannedShiftKeyNums = [48, 49, 50, 53, 54, 55, 56, 57, 186, 187, 188, 190, 219, 221, 220, 191];
     
     if (window.event) { // IE					
         keynum = e.keyCode;
@@ -156,9 +176,13 @@ function folderInput(name, e) {
         keynum = e.which;
     }
     
-    if (keynum === 220 || keynum === 191) {
-        event.returnValue = false;
-    } else if (e.shiftKey === true) {
+    if (e.shiftKey === false) {
+        for (i = 0; i < bannedShiftKeyNums.length; i += 1) {
+            if (keynum === bannedNonShiftKeyNums[i]) {
+                event.returnValue = false;
+            }
+        }
+    } else {
         for (i = 0; i < bannedShiftKeyNums.length; i += 1) {
             if (keynum === bannedShiftKeyNums[i]) {
                 event.returnValue = false;

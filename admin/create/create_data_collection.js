@@ -40,6 +40,9 @@ function initializeVars() {
             var myInterval = window.setInterval(loadAudio, 200); \
             var audioContainer = document.createElement('div'); \
         } \
+        else {\
+            onAudioLoad(); \
+        } \
         function loadAudio() { \
             a = document.getElementById('a' + i); \
             d = a.duration; \
@@ -74,7 +77,6 @@ function initializeVars() {
     </script> </html>";
 }
 
-
 function setKeyChoices() {
     "use strict";
     var i;
@@ -88,6 +90,8 @@ function setKeyChoices() {
             keyChoices.push(39);
         } else if (document.getElementById("General_value_table_td_" + i + "_1_input").value === "\u25BC") {
             keyChoices.push(40);
+        } else if (document.getElementById("General_value_table_td_" + i + "_1_input").value === "BLANK") {
+            keyChoices.push(-1);
         } else {
             keyChoices.push(document.getElementById("General_value_table_td_" + i + "_1_input").value.charCodeAt(0));
         }
@@ -204,12 +208,18 @@ function generateTestBlock(name) {
     
     if (document.getElementById(name + "_feedback_none").checked) {
         str = "var " + name + "_test_block = {" +
-                                "type: 'single-stim'," +
+                                "type: 'categorize'," +
                                 "stimuli: stim" + name + "Images," +
+                                "key_answer: answers" + name + "," +
+                                "text_answer: ''," +
                                 "data: stim" + name + "Data," +
                                 "choices: [" + keyChoices[0] + ", " + keyChoices[1] + "]," +
+                                "correct_text: '', incorrect_text: ''," +
                                 "is_html: false," +
                                 "timing_response: " + stimTime + "," +
+                                "timing_feedback_duration: 1," +
+                                "show_stim_with_feedback: false," +
+                                "timeout_message: '<b></b>'," +
                                 "timing_stim: " + stimTime + " };\n";
         
     } else {
@@ -317,7 +327,7 @@ function generateArraysJS(name) {
             stimCycleCount += 1;
         }
         
-        if (document.getElementById("Trials_random_prompt_no").checked) {
+        if (document.getElementById(name + "_random_prompt_no").checked) {
             if (document.getElementById("General_stim_congruent_select_" + stimCycleCount).selectedIndex === 0 && congruentNum > 0) {
                 stimImagesJS += "stim" + stimCycleCount + ".image";
                 stimDataJS += "stim" + stimCycleCount + ".data";
@@ -630,6 +640,13 @@ function createTest() {
             document.getElementById("General_stim_select_1_" + i).options[document.getElementById("General_stim_select_1_" + i).selectedIndex].value + "', " +
             "Congruent: '" + document.getElementById("General_stim_congruent_select_" + i).options[document.getElementById("General_stim_congruent_select_" + i).selectedIndex].value + "' } };\n";
         addAsset("assets/" + makeStringSafe(document.getElementById("General_stim_file_" + i).value.split(/(\\|\/)/g).pop()), "image");
+    }
+    
+    /**
+    * Make sure audio array is closed if empty
+    */
+    if (html4a.length === 13) {
+        html4a += "];";
     }
     
     /**

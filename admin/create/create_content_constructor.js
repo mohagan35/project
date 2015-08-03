@@ -219,7 +219,7 @@ function createFormElement(name, align, type, str) {
                 stim_options += "<td class='task' id='" + name + "_stim_task_" + i + "_" + str + "'><div class='empty' id='" + name + "_stim_" + i + "_0_" + str + "'>" + document.getElementById("General_task_table_td_" + i + "_0_input").value + ": </div> <select id='" + name + "_stim_select_" + i + "_" + str + "'>";
                 
                 for (j = 1; j < 3; j += 1) {
-                    if (document.getElementById("General_task_table_td_" + i + "_" + j).value !== "") {
+                    if (document.getElementById("General_task_table_td_" + i + "_" + j + "_input").value !== "") {
                         stim_options += "<option id='" + name + "_stim_" + i + "_" + j + "_" + str + "'>" + document.getElementById("General_task_table_td_" + i + "_" + j + "_input").value + "</option>";
                     }
                 }
