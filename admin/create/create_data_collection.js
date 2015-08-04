@@ -22,12 +22,6 @@ function initializeVars() {
     output = "";
     html1 = "<!doctype html><html><head><title>";
     html2 = "</title> \
-            <style media='screen' type='text/css'> \
-            #jspsych-categorize-stimulus { \
-                width: 100%; \
-                height: 100%; \
-            } \
-            </style> \
             <script src='js/jquery.js'></script> \
             <script src='js/jspsych/jspsych.js'></script> \
             <script src='js/jspsych/plugins/jspsych-single-stim.js'></script> \
@@ -36,7 +30,12 @@ function initializeVars() {
             <script src='js/jspsych/plugins/jspsych-instructions.js'></script> \
             <script>";
     html3 = "</script><link href='js/jspsych/css/jspsych.css' rel='stylesheet' type='text/css'></link> \
-        </head><body id='body' ";
+            <script>var css = '.jspsych-display-element { width: ' + (window.innerWidth * (window.innerHeight / window.screen.height) - 13) + 'px; margin: 75px auto 0px auto; text-align: center; }', \
+        style = document.createElement('style'); \
+    style.type = 'text/css'; \
+    style.appendChild(document.createTextNode(css)); \
+    document.head.appendChild(style); \
+    </script></head><body id='body' ";
     html4 = "><div id='textBox' class='jspsych-display-element'></div></body><script>var images = [";
     html4a = "var audio = [";
     html5 = "var i = 0; \
@@ -192,7 +191,7 @@ function generateIntroBlock(name) {
         str += "<script>document.getElementById(\"body\").appendChild(audioContainer.querySelector(\"#a" + audioId + "\")); document.getElementById(\"a" + audioId + "\").play();</scr' + 'ipt><p>";
     }
     if (document.getElementById(name + "_instructions_image_check").checked) {
-        str += "<img src=\"assets/" + makeStringSafe(document.getElementById(name + "_instructions_image_file").value.split(/(\\|\/)/g).pop()) + "\"><p>";
+        str += "<img src=\"assets/" + makeStringSafe(document.getElementById(name + "_instructions_image_file").value.split(/(\\|\/)/g).pop()) + "\" style=\"margin-top: -75px; width: 100%; max-height:100%;\" /><p>";
         addAsset("assets/" + makeStringSafe(document.getElementById(name + "_instructions_image_file").value.split(/(\\|\/)/g).pop()), "image");
     }
     if (document.getElementById(name + "_instructions_text_check").checked) {
@@ -212,8 +211,8 @@ function generateTestBlock(name) {
     if (document.getElementById(name + "_response_time_feedback_input")) {
         feedbackTime = parseInt(document.getElementById(name + "_response_time_feedback_input").value, 10);
     }
-    if (document.getElementById(name + "_response_time_trials_input")) {
-        stimTime = parseInt(document.getElementById(name + "_response_time_trials_input").value, 10);
+    if (document.getElementById(name + "_response_time_stimuli_input")) {
+        stimTime = parseInt(document.getElementById(name + "_response_time_stimuli_input").value, 10);
     }
     
     if (document.getElementById(name + "_feedback_none").checked) {
@@ -225,7 +224,7 @@ function generateTestBlock(name) {
                                 "data: stim" + name + "Data," +
                                 "choices: [" + keyChoices[0] + ", " + keyChoices[1] + "]," +
                                 "correct_text: '', incorrect_text: ''," +
-                                "is_html: false," +
+                                "is_html: true," +
                                 "timing_response: " + stimTime + "," +
                                 "timing_feedback_duration: 1," +
                                 "show_stim_with_feedback: false," +
@@ -249,7 +248,7 @@ function generateTestBlock(name) {
                 str += "<script>audioContainer.querySelector(\"#a" + audioId + "\").play();</scr' + 'ipt>";
             }
             if (document.getElementById(name + "_feedback_image_check").checked) {
-                str += "<img src=\"assets/" + makeStringSafe(document.getElementById(name + "_feedback_correct_image_file").value.split(/(\\|\/)/g).pop()) + "\">";
+                str += "<img src=\"assets/" + makeStringSafe(document.getElementById(name + "_feedback_correct_image_file").value.split(/(\\|\/)/g).pop()) + "\" style=\"margin-top: -7px; width: 100%; max-height:100%;\" />";
                 addAsset("assets/" + makeStringSafe(document.getElementById(name + "_feedback_correct_image_file").value.split(/(\\|\/)/g).pop()), "image");
             }
             str += "', ";
@@ -265,7 +264,7 @@ function generateTestBlock(name) {
                 str += "<script>audioContainer.querySelector(\"#a" + audioId + "\").play();</scr' + 'ipt>";
             }
             if (document.getElementById(name + "_feedback_image_check").checked) {
-                str += "<img src=\"assets/" + makeStringSafe(document.getElementById(name + "_feedback_incorrect_image_file").value.split(/(\\|\/)/g).pop()) + "\">";
+                str += "<img src=\"assets/" + makeStringSafe(document.getElementById(name + "_feedback_incorrect_image_file").value.split(/(\\|\/)/g).pop()) + "\" style=\"margin-top: -7px; width: 100%; max-height:100%;\" />";
                 addAsset("assets/" + makeStringSafe(document.getElementById(name + "_feedback_incorrect_image_file").value.split(/(\\|\/)/g).pop()), "image");
             }
             str += "',";
@@ -281,13 +280,15 @@ function generateTestBlock(name) {
                 str += "<script>audioContainer.querySelector(\"#a" + audioId + "\").play();</scr' + 'ipt>";
             }
             if (document.getElementById(name + "_feedback_image_check").checked) {
-                str += "<img src=\"assets/" + makeStringSafe(document.getElementById(name + "_feedback_slow_image_file").value.split(/(\\|\/)/g).pop()) + "\">";
+                str += "<img src=\"assets/" + makeStringSafe(document.getElementById(name + "_feedback_slow_image_file").value.split(/(\\|\/)/g).pop()) + "\" style=\"margin-top: -7px; width: 100%; max-height:100%;\" />";
                 addAsset("assets/" + makeStringSafe(document.getElementById(name + "_feedback_slow_image_file").value.split(/(\\|\/)/g).pop()), "image");
             }
             str += "',";
+        } else {
+            str += "timeout_message: '<b></b>', ";
         }
         
-        str += "is_html: false," +
+        str += "is_html: true," +
                 "timing_feedback_duration: " + feedbackTime + "," +
                 "timing_response: " + stimTime + "," +
                 "timing_stim: " + stimTime + " };\n";
@@ -427,7 +428,7 @@ function generateExampleTestBlock() {
                 str += "<script>" + pauseAll + "audioContainer.querySelector(\"#a" + audioId + "\").play();</scr' + 'ipt>";
             }
             if (document.getElementById("Example_feedback_image_check").checked) {
-                str += "<img src=\"assets/" + makeStringSafe(document.getElementById("Example_feedback_correct_image_file").value.split(/(\\|\/)/g).pop()) + "\">";
+                str += "<img src=\"assets/" + makeStringSafe(document.getElementById("Example_feedback_correct_image_file").value.split(/(\\|\/)/g).pop()) + "\" style=\"margin-top: -7px; width: 100%; max-height:100%;\" />";
                 addAsset("assets/" + makeStringSafe(document.getElementById("Example_feedback_correct_image_file").value.split(/(\\|\/)/g).pop()), "image");
             }
             str += "', incorrect_text: '<script>document.getElementById(\"audioExample\").pause();</scr\' + \'ipt>',";
@@ -440,7 +441,7 @@ function generateExampleTestBlock() {
                 str += "<script>" + pauseAll + "audioContainer.querySelector(\"#a" + audioId + "\").play();</scr' + 'ipt>";
             }
             if (document.getElementById("Example_feedback_image_check").checked) {
-                str += "<img src=\"assets/" + makeStringSafe(document.getElementById("Example_feedback_incorrect_image_file").value.split(/(\\|\/)/g).pop()) + "\">";
+                str += "<img src=\"assets/" + makeStringSafe(document.getElementById("Example_feedback_incorrect_image_file").value.split(/(\\|\/)/g).pop()) + "\" style=\"margin-top: -7px; width: 100%; max-height:100%;\" />";
                 addAsset("assets/" + makeStringSafe(document.getElementById("Example_feedback_incorrect_image_file").value.split(/(\\|\/)/g).pop()), "image");
             }
             str += "',";
@@ -453,7 +454,7 @@ function generateExampleTestBlock() {
                 str += "<script>" + pauseAll + "audioContainer.querySelector(\"#a" + audioId + "\").play();</scr' + 'ipt>";
             }
             if (document.getElementById("Example_feedback_image_check").checked) {
-                str += "<img src=\"assets/" + makeStringSafe(document.getElementById("Example_feedback_correct_image_file").value.split(/(\\|\/)/g).pop()) + "\">";
+                str += "<img src=\"assets/" + makeStringSafe(document.getElementById("Example_feedback_correct_image_file").value.split(/(\\|\/)/g).pop()) + "\" style=\"margin-top: -7px; width: 100%; max-height:100%;\" />";
                 addAsset("assets/" + makeStringSafe(document.getElementById("Example_feedback_correct_image_file").value.split(/(\\|\/)/g).pop()), "image");
             }
             str += "', incorrect_text: '<script>" + pauseAll + "</scr\' + \'ipt>";
@@ -463,7 +464,7 @@ function generateExampleTestBlock() {
                 str += "<script>" + pauseAll + "audioContainer.querySelector(\"#a" + audioId + "\").play();</scr' + 'ipt>";
             }
             if (document.getElementById("Example_feedback_image_check").checked) {
-                str += "<img src=\"assets/" + makeStringSafe(document.getElementById("Example_feedback_incorrect_image_file").value.split(/(\\|\/)/g).pop()) + "\">";
+                str += "<img src=\"assets/" + makeStringSafe(document.getElementById("Example_feedback_incorrect_image_file").value.split(/(\\|\/)/g).pop()) + "\" style=\"margin-top: -7px; width: 100%; max-height:100%;\" />";
                 addAsset("assets/" + makeStringSafe(document.getElementById("Example_feedback_incorrect_image_file").value.split(/(\\|\/)/g).pop()), "image");
             }
             str += "',";
@@ -492,7 +493,7 @@ function generateExamplesJS() {
         audioId = getAudioId(makeStringSafe(document.getElementById("Example_trial_file_" + i).value.split(/(\\|\/)/g).pop()));
         
         stimImagesJS += "'<script>audioContainer.querySelector(\"#a" + audioId + "\").play();</scr' + 'ipt>" +
-            "<img src=\"assets/" + makeStringSafe(document.getElementById("General_stim_file_" + (document.getElementById("Example_trial_select_stim_" + i).selectedIndex + 1)).value.split(/(\\|\/)/g).pop()) + "\">'";
+            "<img src=\"assets/" + makeStringSafe(document.getElementById("General_stim_file_" + (document.getElementById("Example_trial_select_stim_" + i).selectedIndex + 1)).value.split(/(\\|\/)/g).pop()) + "\" style=\"width: 100%; max-height:100%;\" />'";
         
         stimDataJS += "stim" + (document.getElementById("Example_trial_select_stim_" + i).selectedIndex + 1) + ".data";
         answersJS += keyChoices[document.getElementById("General_stim_select_1_" + (document.getElementById("Example_trial_select_stim_" + i).selectedIndex + 1)).selectedIndex];
@@ -562,7 +563,7 @@ function createTest() {
             pagesJS += "<script>document.getElementById(\"body\").appendChild(audioContainer.querySelector(\"#a" + audioId + "\")); document.getElementById(\"a" + audioId + "\").play();</scr' + 'ipt><p>";
         }
         if (document.getElementById("Introduction_instructions_image_check").checked) {
-            pagesJS += "<img src=\"assets/" + makeStringSafe(document.getElementById("Introduction_instructions_image_file").value.split(/(\\|\/)/g).pop()) + "\"><p>";
+            pagesJS += "<img src=\"assets/" + makeStringSafe(document.getElementById("Introduction_instructions_image_file").value.split(/(\\|\/)/g).pop()) + "\" style=\"margin-top: -75px; width: 100%; max-height:100%;\" /><p>";
             addAsset("assets/" + makeStringSafe(document.getElementById("Introduction_instructions_image_file").value.split(/(\\|\/)/g).pop()), "image");
         }
         if (document.getElementById("Introduction_instructions_text_check").checked) {
@@ -586,7 +587,7 @@ function createTest() {
             pagesJS += "<script>document.getElementById(\"body\").appendChild(audioContainer.querySelector(\"#a" + audioId + "\")); document.getElementById(\"a" + audioId + "\").play();</scr' + 'ipt><p>";
         }
         if (document.getElementById("Introduction_instructions_image_check_" + i).checked) {
-            pagesJS += "<img src=\"assets/" + makeStringSafe(document.getElementById("Introduction_instructions_image_" + i + "_file").value.split(/(\\|\/)/g).pop()) + "\"><p>";
+            pagesJS += "<img src=\"assets/" + makeStringSafe(document.getElementById("Introduction_instructions_image_" + i + "_file").value.split(/(\\|\/)/g).pop()) + "\" style=\"margin-top: -75px; width: 100%; max-height:100%;\" /><p>";
             addAsset("assets/" + makeStringSafe(document.getElementById("Introduction_instructions_image_" + i + "_file").value.split(/(\\|\/)/g).pop()), "image");
         }
         if (document.getElementById("Introduction_instructions_text_check_" + i).checked) {
@@ -645,7 +646,7 @@ function createTest() {
     */
     for (i = 1; i <= stimNum; i += 1) {
         stimJS += "var stim" + i + " = { " +
-            "image: 'assets/" + makeStringSafe(document.getElementById("General_stim_file_" + i).value.split(/(\\|\/)/g).pop()) + "'," +
+            "image: '<img src=\"assets/" + makeStringSafe(document.getElementById("General_stim_file_" + i).value.split(/(\\|\/)/g).pop()) + "\" style=\"margin-top: -75px; width: 100%; max-height:100%;\" />'," +
             "data: { " + document.getElementById("General_task_table_td_1_0_input").value + ": '" +
             document.getElementById("General_stim_select_1_" + i).options[document.getElementById("General_stim_select_1_" + i).selectedIndex].value + "', " +
             "Congruent: '" + document.getElementById("General_stim_congruent_select_" + i).options[document.getElementById("General_stim_congruent_select_" + i).selectedIndex].value + "' } };\n";

@@ -176,9 +176,9 @@ function validateForm() {
                 addHighlight(i, document.getElementById(headers[i] + "_response_time_feedback"));
             }
         }
-        if (document.getElementById(headers[i] + "_response_time_trials_input")) {
-            if (document.getElementById(headers[i] + "_response_time_trials_input").value === "") {
-                addHighlight(i, document.getElementById(headers[i] + "_response_time_trials"));
+        if (document.getElementById(headers[i] + "_response_time_stimuli_input")) {
+            if (document.getElementById(headers[i] + "_response_time_stimuli_input").value === "") {
+                addHighlight(i, document.getElementById(headers[i] + "_response_time_stimuli"));
             }
         }
     }

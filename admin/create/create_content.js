@@ -554,7 +554,7 @@ function genericInput(name, type) {
         nextContainer.appendChild(createFormElement(name + "_incongruent", "_center", "sub_title", "<br><br><i>Number of incongruent: 1</i>"));
         appendNext(container, nextElement, nextContainer);
         
-        nextElement = createFormElement(name, "", "response_time", "trials");
+        nextElement = createFormElement(name, "", "response_time", "stimuli");
         
         if (name === "Practice") {
             addHeader("Trials");
