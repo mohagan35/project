@@ -384,7 +384,6 @@ function taskInput(name, row, col, input) {
         alterTrials("Example", "task");
     }
 }
-
 function numberPressInput(e, dir, name, type) {
     "use strict";
     var leftNum = 0,
@@ -406,7 +405,7 @@ function numberPressInput(e, dir, name, type) {
         keynum = e.which;
     }
     
-    if (type === "stim") {
+    if (type === "stim" || type === "cue") {
         minNum = 1;
     } else if (type === "trial") {
         if (name === "Example") {
@@ -622,15 +621,17 @@ function efChanged() {
         create_form = document.getElementById("create_form"),
         divbreak = document.createElement("div"),
         divbreak2 = document.createElement("div"),
+        divbreak3 = document.createElement("div"),
         cueNames = ["Example", "Practice", "Trials"],
         i,
-        setSelected = false,
+        setSelected = -1,
         nextElement,
         nextContainer,
         general_container = document.getElementById("General_container"),
         introduction_container = createFormElement("Introduction", "_container", "container");
     
     efSelected = efSelect.options[efSelect.selectedIndex].value;
+    divbreak3.className = "break";
     
     if (efSelected !== "Select" && document.getElementById("Introduction_container") === null) {
         divbreak.className = "break";
@@ -655,20 +656,49 @@ function efChanged() {
         document.getElementById("efTest").scrollIntoView();
     } else {
         for (i = 0; i < cueNames.length; i += 1) {
-            if (document.getElementById(cueNames[i] + "_cue_prompt")) {
-                if (document.getElementById(cueNames[i] + "_cue_switch").checked) {
-                    setSelected = true;
+            if (efSelected === "Inhibition") {
+                if (document.getElementById(cueNames[i] + "_switches_number")) {
+                    document.getElementById(cueNames[i] + "_switches_number").parentNode.removeChild(document.getElementById(cueNames[i] + "_switches_number"));
                 }
-                document.getElementById(cueNames[i] + "_cue_prompt").parentNode.replaceChild(createFormElement(cueNames[i], "", "cue_prompt"), document.getElementById(cueNames[i] + "_cue_prompt"));
-                if (setSelected) {
-                    document.getElementById(cueNames[i] + "_cue_trial").checked = true;
+            } else if (efSelected === "Switching") {
+                if (document.getElementById(cueNames[i] + "_trial_container") && document.getElementById(cueNames[i] + "_switches_number") === null) {
+                    document.getElementById(cueNames[i] + "_trial_container").appendChild(createNumberInput(cueNames[i], "", "switches"));
                 }
             }
-            if (i > 0 && document.getElementById(cueNames[i] + "_switches_container")) {
-                if (efSelected === "Switching" && document.getElementById(cueNames[i] + "_switches_number") === null) {
-                    document.getElementById(cueNames[i] + "_switches_container").appendChild(createNumberInput(cueNames[i], "", "switches"));
-                } else if (document.getElementById(cueNames[i] + "_switches_number")) {
-                    document.getElementById(cueNames[i] + "_switches_container").removeChild(document.getElementById(cueNames[i] + "_switches_number"));
+            
+            
+            if (document.getElementById(cueNames[i] + "_cue_switch")) {
+                if (document.getElementById(cueNames[i] + "_cue_switch").checked) {
+                    setSelected = 1;
+                }
+            }
+            
+            if (document.getElementById(cueNames[i] + "_cue_prompt")) {
+                if (document.getElementById(cueNames[i] + "_cue_trial").checked) {
+                    setSelected = 0;
+                } else if (document.getElementById(cueNames[i] + "_cue_never").checked) {
+                    setSelected = 2;
+                }
+                
+                document.getElementById(cueNames[i] + "_cue_prompt").parentNode.replaceChild(createFormElement(cueNames[i], "", "cue_prompt"), document.getElementById(cueNames[i] + "_cue_prompt"));
+            }
+            if (i > 0 && document.getElementById(cueNames[i] + "_cue_container")) {
+                if (setSelected === 0) {
+                    document.getElementById(cueNames[i] + "_cue_trial").checked = true;
+                    if (document.getElementById(cueNames[i] + "_cue_number") === null) {
+                        document.getElementById(cueNames[i] + "_cue_container").appendChild(createNumberInput(cueNames[i], "", "cue"));
+                        document.getElementById(cueNames[i] + "_cue_container").appendChild(divbreak3);
+                        document.getElementById(cueNames[i] + "_cue_container").appendChild(createFormElement(cueNames[i], "", "cue_type"));
+                    }
+                } else if (setSelected === 1) {
+                    document.getElementById(cueNames[i] + "_cue_trial").checked = true;
+                    if (document.getElementById(cueNames[i] + "_cue_number") === null) {
+                        document.getElementById(cueNames[i] + "_cue_container").appendChild(createNumberInput(cueNames[i], "", "cue"));
+                        document.getElementById(cueNames[i] + "_cue_container").appendChild(divbreak3);
+                        document.getElementById(cueNames[i] + "_cue_container").appendChild(createFormElement(cueNames[i], "", "cue_type"));
+                    }
+                } else if (setSelected === 2) {
+                    document.getElementById(cueNames[i] + "_cue_never").checked = true;
                 }
             }
         }
@@ -1183,10 +1213,12 @@ function feedbackResponse(name, type, toggle) {
         nextContainer,
         divbreak = document.createElement("div"),
         divbreak2 = document.createElement("div"),
+        divbreak3 = document.createElement("div"),
         scrollTo;
     
     divbreak.className = "break";
     divbreak2.className = "break";
+    divbreak3.className = "break";
     
     if (toggle === "neither" || toggle === "none") {
         if (document.getElementById(name + "_" + type + "_type")) {
@@ -1199,7 +1231,7 @@ function feedbackResponse(name, type, toggle) {
             document.getElementById(name + "_feedback_input_container").innerHTML = "";
         }
     }
-    if (document.getElementById(name + "_" + type + "_type" + "_container") === null) {
+    if (type !== "cue" && document.getElementById(name + "_" + type + "_type" + "_container") === null) {
         container.appendChild(divbreak);
         container.appendChild(createFormElement(name + "_" + type + "_type", "_container", "container"));
     }
@@ -1248,29 +1280,47 @@ function feedbackResponse(name, type, toggle) {
     }
     
     if (toggle !== "neither" && toggle !== "never" && toggle !== "none") {
-        if (document.getElementById(name + "_feedback_correct").checked || document.getElementById(name + "_feedback_incorrect").checked) {
-            if (document.getElementById(name + "_" + type + "_type") === null) {
-                document.getElementById(name + "_" + type + "_container").appendChild(createFormElement(name, "", type + "_type"));
-            }
-            if (document.getElementById(name + "_feedback_none")) {
-                document.getElementById(name + "_feedback_none").checked = false;
-            }
-        } else if (document.getElementById(name + "_feedback_slow")) {
-            if (document.getElementById(name + "_feedback_slow").checked) {
+        if (type !== "cue") {
+            if (document.getElementById(name + "_feedback_correct").checked || document.getElementById(name + "_feedback_incorrect").checked) {
                 if (document.getElementById(name + "_" + type + "_type") === null) {
                     document.getElementById(name + "_" + type + "_container").appendChild(createFormElement(name, "", type + "_type"));
                 }
                 if (document.getElementById(name + "_feedback_none")) {
                     document.getElementById(name + "_feedback_none").checked = false;
                 }
-            }
-        } else if (document.getElementById(name + "_feedback_both")) {
-            if (document.getElementById(name + "_feedback_both").checked) {
-                if (document.getElementById(name + "_" + type + "_type") === null) {
-                    document.getElementById(name + "_" + type + "_container").appendChild(createFormElement(name, "", type + "_type"));
+            } else if (document.getElementById(name + "_feedback_slow")) {
+                if (document.getElementById(name + "_feedback_slow").checked) {
+                    if (document.getElementById(name + "_" + type + "_type") === null) {
+                        document.getElementById(name + "_" + type + "_container").appendChild(createFormElement(name, "", type + "_type"));
+                    }
+                    if (document.getElementById(name + "_feedback_none")) {
+                        document.getElementById(name + "_feedback_none").checked = false;
+                    }
                 }
-                if (document.getElementById(name + "_feedback_none")) {
-                    document.getElementById(name + "_feedback_none").checked = false;
+            } else if (document.getElementById(name + "_feedback_both")) {
+                if (document.getElementById(name + "_feedback_both").checked) {
+                    if (document.getElementById(name + "_" + type + "_type") === null) {
+                        document.getElementById(name + "_" + type + "_container").appendChild(createFormElement(name, "", type + "_type"));
+                    }
+                    if (document.getElementById(name + "_feedback_none")) {
+                        document.getElementById(name + "_feedback_none").checked = false;
+                    }
+                }
+            }
+        } else {
+            if (document.getElementById(name + "_cue_trial").checked) {
+                if (document.getElementById(name + "_cue_number") === null) {
+                    document.getElementById(name + "_cue_container").innerHTML = "";
+                    document.getElementById(name + "_" + type + "_container").appendChild(createNumberInput(name, "", "cue"));
+                    document.getElementById(name + "_" + type + "_container").appendChild(divbreak3);
+                    document.getElementById(name + "_" + type + "_container").appendChild(createFormElement(name, "", "cue_type"));
+                    document.getElementById(name + "_" + type + "_container").appendChild(createFormElement(name + "_" + type + "_type", "_container", "container"));
+                }
+            } else if (document.getElementById(name + "_cue_switch")) {
+                if (document.getElementById(name + "_cue_switch").checked) {
+                    document.getElementById(name + "_cue_container").innerHTML = "";
+                    document.getElementById(name + "_" + type + "_container").appendChild(createFormElement(name, "", "cue_type"));
+                    document.getElementById(name + "_" + type + "_container").appendChild(createFormElement(name + "_" + type + "_type", "_container", "container"));
                 }
             }
         }
@@ -1278,8 +1328,8 @@ function feedbackResponse(name, type, toggle) {
         nextElement = createFormElement(name, "", "feedback_prompt");
         nextContainer = createFormElement(name + "_feedback", "_container", "container");
         
-        if (document.getElementById(name + "_cue_type_container")) {
-            document.getElementById(name + "_cue_type_container").innerHTML = "";
+        if (document.getElementById(name + "_cue_container") && type === "cue") {
+            document.getElementById(name + "_cue_container").innerHTML = "";
         }
     } else if (toggle === "neither" || toggle === "none") {
         if (name !== "Example") {

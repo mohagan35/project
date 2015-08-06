@@ -70,6 +70,8 @@ function createNumberInput(name, align, type) {
     } else if (type === "switches") {
         element.innerHTML = "How many task switches should there be?";
         val = 0;
+    } else if (type === "cue") {
+        element.innerHTML = "Before how many trials should each cue be fired?";
     }
     
     element.innerHTML += "<p><input class='key' id='" + element.id + "_left' type='text' readonly value='0'" +    "onkeypress=\"numberPressInput(event, 'left', '" + name + "', '" + type + "')\">" +
@@ -280,7 +282,7 @@ function createFormElement(name, align, type, str) {
         
     } else if (type === "cue_prompt") {
         element.innerHTML = "When would you like to provide trial cues?" +
-                "<p>Before every trial <input type='radio' id='" + name + "_cue_trial' name='" + name + "_cue_options' value='trial' onclick=\"feedbackResponse('" + name + "', 'cue', 'trial')\">";
+                "<p>Before every X trials <input type='radio' id='" + name + "_cue_trial' name='" + name + "_cue_options' value='trial' onclick=\"feedbackResponse('" + name + "', 'cue', 'trial')\">";
         
         if (efSelected === "Switching") {
             element.innerHTML += "<p>Before every task switch <input type='radio' id='" + name + "_cue_switch' name='" + name + "_cue_options' value='switch' onclick=\"feedbackResponse('" + name + "', 'cue', 'switch')\">";
