@@ -303,6 +303,7 @@ function generateArraysJS(name) {
     "use strict";
     var i,
         j,
+        cueNum = getNumberInputValue(name, "cue"),
         trialsNum = getNumberInputValue(name, "trial"),
         congruentNum = getNumberInputValue(name, "congruent"),
         incongruentNum = trialsNum - congruentNum,
@@ -314,6 +315,7 @@ function generateArraysJS(name) {
         congruencyRatio = incongruentNum / trialsNum,
         stimCycleIndex,
         stimCycleCount = 0,
+        cueCount = cueNum,
         temp;
     
     for (i = 1; i <= stimNum; i += 1) {
@@ -340,43 +342,54 @@ function generateArraysJS(name) {
             stimCycleCount += 1;
         }
         
-        if (document.getElementById(name + "_random_prompt_no").checked) {
-            if (document.getElementById("General_stim_congruent_select_" + stimCycleCount).selectedIndex === 0 && congruentNum > 0) {
-                stimImagesJS += "stim" + stimCycleCount + ".image";
-                stimDataJS += "stim" + stimCycleCount + ".data";
-                answersJS += keyChoices[document.getElementById("General_stim_select_1_" + stimCycleCount).selectedIndex];
-                congruentNum -= 1;
-            } else if (document.getElementById("General_stim_congruent_select_" + stimCycleCount).selectedIndex === 1 && incongruentNum > 0) {
-                stimImagesJS += "stim" + stimCycleCount + ".image";
-                stimDataJS += "stim" + stimCycleCount + ".data";
-                answersJS += keyChoices[document.getElementById("General_stim_select_1_" + stimCycleCount).selectedIndex];
-                incongruentNum -= 1;
-            } else {
-                trialsNum += 1;
-                continue;
-            }
+        if (cueNum > 0 && cueCount === cueNum) {
+            stimImagesJS += "cue" + name + ".image";
+            stimDataJS += "cue" + name + ".data";
+            answersJS += "0";
+            cueCount = 0;
+            trialsNum += 1;
         } else {
-            if (congruentNumbers.length > 1 && congruentNum > 0 && (Math.random() > congruencyRatio || incongruentNumbers.length < 2 || incongruentNum < 1)) {
-                temp = parseInt((Math.random() * (congruentNumbers.length - 1)) + 1, 10);
-                stimCycleIndex = congruentNumbers[temp];
-                stimImagesJS += "stim" + stimCycleIndex + ".image";
-                stimDataJS += "stim" + stimCycleIndex + ".data";
-                answersJS += keyChoices[document.getElementById("General_stim_select_1_" + stimCycleIndex).selectedIndex];
-                congruentNumbers.splice(temp, 1);
-                congruentNum -= 1;
-            } else if (incongruentNumbers.length > 1 && incongruentNum > 0) {
-                temp = parseInt((Math.random() * (incongruentNumbers.length - 1)) + 1, 10);
-                stimCycleIndex = incongruentNumbers[temp];
-                stimImagesJS += "stim" + stimCycleIndex + ".image";
-                stimDataJS += "stim" + stimCycleIndex + ".data";
-                answersJS += keyChoices[document.getElementById("General_stim_select_1_" + stimCycleIndex).selectedIndex];
-                incongruentNumbers.splice(temp, 1);
-                incongruentNum -= 1;
+            if (document.getElementById(name + "_random_prompt_no").checked) {
+                if (document.getElementById("General_stim_congruent_select_" + stimCycleCount).selectedIndex === 0 && congruentNum > 0) {
+                    stimImagesJS += "stim" + stimCycleCount + ".image";
+                    stimDataJS += "stim" + stimCycleCount + ".data";
+                    answersJS += keyChoices[document.getElementById("General_stim_select_1_" + stimCycleCount).selectedIndex];
+                    congruentNum -= 1;
+                } else if (document.getElementById("General_stim_congruent_select_" + stimCycleCount).selectedIndex === 1 && incongruentNum > 0) {
+                    stimImagesJS += "stim" + stimCycleCount + ".image";
+                    stimDataJS += "stim" + stimCycleCount + ".data";
+                    answersJS += keyChoices[document.getElementById("General_stim_select_1_" + stimCycleCount).selectedIndex];
+                    incongruentNum -= 1;
+                } else {
+                    trialsNum += 1;
+                    continue;
+                }
             } else {
-                trialsNum += 1;
-                continue;
+                if (congruentNumbers.length > 1 && congruentNum > 0 && (Math.random() > congruencyRatio || incongruentNumbers.length < 2 || incongruentNum < 1)) {
+                    temp = parseInt((Math.random() * (congruentNumbers.length - 1)) + 1, 10);
+                    stimCycleIndex = congruentNumbers[temp];
+                    stimImagesJS += "stim" + stimCycleIndex + ".image";
+                    stimDataJS += "stim" + stimCycleIndex + ".data";
+                    answersJS += keyChoices[document.getElementById("General_stim_select_1_" + stimCycleIndex).selectedIndex];
+                    congruentNumbers.splice(temp, 1);
+                    congruentNum -= 1;
+                } else if (incongruentNumbers.length > 1 && incongruentNum > 0) {
+                    temp = parseInt((Math.random() * (incongruentNumbers.length - 1)) + 1, 10);
+                    stimCycleIndex = incongruentNumbers[temp];
+                    stimImagesJS += "stim" + stimCycleIndex + ".image";
+                    stimDataJS += "stim" + stimCycleIndex + ".data";
+                    answersJS += keyChoices[document.getElementById("General_stim_select_1_" + stimCycleIndex).selectedIndex];
+                    incongruentNumbers.splice(temp, 1);
+                    incongruentNum -= 1;
+                } else {
+                    trialsNum += 1;
+                    continue;
+                }
             }
+            
+            cueCount += 1;
         }
+        
         if (i < trialsNum) {
             stimImagesJS += ", ";
             stimDataJS += ", ";
@@ -521,6 +534,7 @@ function createTest() {
         j,
         temp,
         stimJS = "",
+        cuesJS = "",
         answersJS = "",
         stimImagesJS = "",
         stimDataJS = "",
@@ -534,6 +548,7 @@ function createTest() {
         trialsIntroBlockJS,
         finalMessageBlockJS,
         audioId,
+        testBlockHeaders = ["Practice", "Trials"],
         pagesArrayJS = "var pagesArray = [",
         pagesJS = "",
         outputJS = "";
@@ -656,6 +671,25 @@ function createTest() {
     }
     
     /**
+    * Generate JS for cues
+    */
+    for (i = 0; i < testBlockHeaders.length; i += 1) {
+        if (document.getElementById(testBlockHeaders[i] + "_cue_number")) {
+            cuesJS += "var cue" + testBlockHeaders[i] + " = { image: '";
+            if (document.getElementById(testBlockHeaders[i] + "_cue_image_file")) {
+                addAsset("assets/" + makeStringSafe(document.getElementById(testBlockHeaders[i] + "_cue_image_file").value.split(/(\\|\/)/g).pop()), "image");
+                cuesJS += "<img src=\"assets/" + makeStringSafe(document.getElementById(testBlockHeaders[i] + "_cue_image_file").value.split(/(\\|\/)/g).pop()) + imageScale;
+            }
+            if (document.getElementById(testBlockHeaders[i] + "_cue_audio_file")) {
+                addAsset("assets/" + makeStringSafe(document.getElementById(testBlockHeaders[i] + "_cue_audio_file").value.split(/(\\|\/)/g).pop()), "audio");
+                audioId = getAudioId(makeStringSafe(document.getElementById(testBlockHeaders[i] + "_cue_audio_file").value.split(/(\\|\/)/g).pop()));
+                cuesJS += "<script>audioContainer.querySelector(\"#a" + audioId + "\").play();</scr' + 'ipt>";
+            }
+            cuesJS += "', data: { isACue: true } }; ";
+        }
+    }
+    
+    /**
     * Make sure audio array is closed if empty
     */
     if (html4a.length === 13) {
@@ -665,7 +699,7 @@ function createTest() {
     /**
     * Create the complete JS code
     */
-    outputJS = pagesJS + pagesArrayJS + stimJS + stimImagesJS + stimDataJS + answersJS + introBlockJS;
+    outputJS = pagesJS + pagesArrayJS + stimJS + cuesJS + stimImagesJS + stimDataJS + answersJS + introBlockJS;
     if (exampleBlockJS !== undefined) {
         outputJS += exampleIntroBlockJS + exampleBlockJS;
     }

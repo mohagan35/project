@@ -495,11 +495,7 @@ function numberPressInput(e, dir, name, type) {
         document.getElementById(name + "_incongruent_sub_title").innerHTML = "<br><br><i>Number of incongruent: " + (maxNum - outputNum) + "</i>";
     }
     
-    if (type === "stim" || type === "trial") {
-        document.getElementById(name + "_" + type + "_number").scrollIntoView();
-    } else {
-        document.getElementById(name + "_trial_number").scrollIntoView();
-    }
+    document.getElementById(name + "_" + type + "_number").scrollIntoView();
 }
 
 function appendNext(container, nextElement, nextContainer) {

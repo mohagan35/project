@@ -297,8 +297,12 @@ function createFormElement(name, align, type, str) {
         
     } else if (type === "response_time") {
         element.id += "_" + str;
-        element.innerHTML = "How long should the " + str + " be shown for?" +
-            "<p><input id='" + name + "_" + type + "_" + str + "_input' type='text' maxlength='4' onkeydown=\"numberTextInput(event)\"> ms";
+        if (str === "stimuli" && document.getElementById(name + "_cue_never").checked === false) {
+            element.innerHTML = "How long should the " + str + " and cues be shown for?";
+        } else {
+            element.innerHTML = "How long should the " + str + " be shown for?";
+        }
+        element.innerHTML += "<p><input id='" + name + "_" + type + "_" + str + "_input' type='text' maxlength='4' onkeydown=\"numberTextInput(event)\"> ms";
     }
     
     return element;
