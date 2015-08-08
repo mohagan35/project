@@ -86,9 +86,10 @@ function initializeVars() {
 
 function setKeyChoices() {
     "use strict";
-    var i;
+    var i,
+        taskNum = document.getElementById("General_task_select").selectedIndex + 1;
     
-    for (i = 1; i <= 2; i += 1) {
+    for (i = 1; i <= 2 * taskNum; i += 1) {
         if (document.getElementById("General_value_table_td_" + i + "_1_input").value === "\u25C4") {
             keyChoices.push(37);
         } else if (document.getElementById("General_value_table_td_" + i + "_1_input").value === "\u25B2") {
@@ -307,8 +308,12 @@ function generateArraysJS(name) {
         trialsNum = getNumberInputValue(name, "trial"),
         congruentNum = getNumberInputValue(name, "congruent"),
         incongruentNum = trialsNum - congruentNum,
+        switchesNum = getNumberInputValue(name, "switches"),
+        switchCount,
+        switchIndex = 0,
         congruentNumbers = [0],
         incongruentNumbers = [0],
+        taskIndex = document.getElementById("General_task_select").selectedIndex,
         stimImagesJS = "var stim" + name + "Images = [",
         stimDataJS = "var stim" + name + "Data = [",
         answersJS = "var answers" + name + " = [",
@@ -316,7 +321,15 @@ function generateArraysJS(name) {
         stimCycleIndex,
         stimCycleCount = 0,
         cueCount = cueNum,
+        taskNumIndex = 1,
+        taskNum = taskIndex + 1,
         temp;
+    
+    if (switchesNum > -1) {
+        switchCount = trialsNum / (switchesNum + 1);
+    } else {
+        switchCount = trialsNum + 1;
+    }
     
     for (i = 1; i <= stimNum; i += 1) {
         if (document.getElementById("General_stim_congruent_select_" + i).selectedIndex === 0) {
@@ -342,7 +355,17 @@ function generateArraysJS(name) {
             stimCycleCount += 1;
         }
         
-        if (cueNum > 0 && cueCount === cueNum) {
+        if (switchIndex === switchCount) {
+            switchIndex = 0;
+            if (taskNumIndex < taskNum) {
+                taskNumIndex += 1;
+            } else {
+                taskNumIndex = 1;
+            }
+        }
+        switchIndex += 1;
+        
+        if (cueNum > -1 && cueCount === cueNum) {
             stimImagesJS += "cue" + name + ".image";
             stimDataJS += "cue" + name + ".data";
             answersJS += "0";
@@ -351,14 +374,14 @@ function generateArraysJS(name) {
         } else {
             if (document.getElementById(name + "_random_prompt_no").checked) {
                 if (document.getElementById("General_stim_congruent_select_" + stimCycleCount).selectedIndex === 0 && congruentNum > 0) {
-                    stimImagesJS += "stim" + stimCycleCount + ".image";
-                    stimDataJS += "stim" + stimCycleCount + ".data";
-                    answersJS += keyChoices[document.getElementById("General_stim_select_1_" + stimCycleCount).selectedIndex];
+                    stimImagesJS += "stim" + (stimCycleCount + stimNum * (taskNumIndex - 1)) + ".image";
+                    stimDataJS += "stim" + (stimCycleCount + stimNum * (taskNumIndex - 1)) + ".data";
+                    answersJS += keyChoices[(2 * taskNumIndex) - 2 + document.getElementById("General_stim_select_" + taskNumIndex + "_" + stimCycleCount).selectedIndex];
                     congruentNum -= 1;
                 } else if (document.getElementById("General_stim_congruent_select_" + stimCycleCount).selectedIndex === 1 && incongruentNum > 0) {
-                    stimImagesJS += "stim" + stimCycleCount + ".image";
-                    stimDataJS += "stim" + stimCycleCount + ".data";
-                    answersJS += keyChoices[document.getElementById("General_stim_select_1_" + stimCycleCount).selectedIndex];
+                    stimImagesJS += "stim" + (stimCycleCount + stimNum * (taskNumIndex - 1)) + ".image";
+                    stimDataJS += "stim" + (stimCycleCount + stimNum * (taskNumIndex - 1)) + ".data";
+                    answersJS += keyChoices[(2 * taskNumIndex) - 2 + document.getElementById("General_stim_select_" + taskNumIndex + "_" + stimCycleCount).selectedIndex];
                     incongruentNum -= 1;
                 } else {
                     trialsNum += 1;
@@ -368,17 +391,17 @@ function generateArraysJS(name) {
                 if (congruentNumbers.length > 1 && congruentNum > 0 && (Math.random() > congruencyRatio || incongruentNumbers.length < 2 || incongruentNum < 1)) {
                     temp = parseInt((Math.random() * (congruentNumbers.length - 1)) + 1, 10);
                     stimCycleIndex = congruentNumbers[temp];
-                    stimImagesJS += "stim" + stimCycleIndex + ".image";
-                    stimDataJS += "stim" + stimCycleIndex + ".data";
-                    answersJS += keyChoices[document.getElementById("General_stim_select_1_" + stimCycleIndex).selectedIndex];
+                    stimImagesJS += "stim" + (stimCycleIndex + stimNum * (taskNumIndex - 1)) + ".image";
+                    stimDataJS += "stim" + (stimCycleIndex + stimNum * (taskNumIndex - 1)) + ".data";
+                    answersJS += keyChoices[(2 * taskNumIndex) - 2 + document.getElementById("General_stim_select_" + taskNumIndex + "_" + stimCycleIndex).selectedIndex];
                     congruentNumbers.splice(temp, 1);
                     congruentNum -= 1;
                 } else if (incongruentNumbers.length > 1 && incongruentNum > 0) {
                     temp = parseInt((Math.random() * (incongruentNumbers.length - 1)) + 1, 10);
                     stimCycleIndex = incongruentNumbers[temp];
-                    stimImagesJS += "stim" + stimCycleIndex + ".image";
-                    stimDataJS += "stim" + stimCycleIndex + ".data";
-                    answersJS += keyChoices[document.getElementById("General_stim_select_1_" + stimCycleIndex).selectedIndex];
+                    stimImagesJS += "stim" + (stimCycleIndex + stimNum * (taskNumIndex - 1)) + ".image";
+                    stimDataJS += "stim" + (stimCycleIndex + stimNum * (taskNumIndex - 1)) + ".data";
+                    answersJS += keyChoices[(2 * taskNumIndex) - 2 + document.getElementById("General_stim_select_" + taskNumIndex + "_" + stimCycleIndex).selectedIndex];
                     incongruentNumbers.splice(temp, 1);
                     incongruentNum -= 1;
                 } else {
@@ -548,6 +571,7 @@ function createTest() {
         trialsIntroBlockJS,
         finalMessageBlockJS,
         audioId,
+        taskIndex = document.getElementById("General_task_select").selectedIndex,
         testBlockHeaders = ["Practice", "Trials"],
         pagesArrayJS = "var pagesArray = [",
         pagesJS = "",
@@ -661,13 +685,31 @@ function createTest() {
     /**
     * Generate JS for stimuli
     */
-    for (i = 1; i <= stimNum; i += 1) {
+    for (i = 1; i <= stimNum * (taskIndex + 1); i += 1) {
+        if (i > stimNum * 3) {
+            temp = i - (stimNum * 3);
+        } else if (i > stimNum * 2) {
+            temp = i - (stimNum * 2);
+        } else if (i > stimNum) {
+            temp = i - stimNum;
+        } else {
+            temp = i;
+        }
+        
         stimJS += "var stim" + i + " = { " +
-            "image: '<img src=\"assets/" + makeStringSafe(document.getElementById("General_stim_file_" + i).value.split(/(\\|\/)/g).pop()) + imageScale + "'," +
-            "data: { " + document.getElementById("General_task_table_td_1_0_input").value + ": '" +
-            document.getElementById("General_stim_select_1_" + i).options[document.getElementById("General_stim_select_1_" + i).selectedIndex].value + "', " +
-            "Congruent: '" + document.getElementById("General_stim_congruent_select_" + i).options[document.getElementById("General_stim_congruent_select_" + i).selectedIndex].value + "' } };\n";
-        addAsset("assets/" + makeStringSafe(document.getElementById("General_stim_file_" + i).value.split(/(\\|\/)/g).pop()), "image");
+            "image: '<img src=\"assets/" + makeStringSafe(document.getElementById("General_stim_file_" + temp).value.split(/(\\|\/)/g).pop()) + imageScale + "'," +
+            "data: { ";
+        if (i <= stimNum) {
+            stimJS += document.getElementById("General_task_table_td_1_0_input").value + ": '" + document.getElementById("General_stim_select_1_" + temp).options[document.getElementById("General_stim_select_1_" + temp).selectedIndex].value + "', ";
+        } else if (i <= stimNum * 2) {
+            stimJS += document.getElementById("General_task_table_td_2_0_input").value + ": '" + document.getElementById("General_stim_select_2_" + temp).options[document.getElementById("General_stim_select_2_" + temp).selectedIndex].value + "', ";
+        } else if (i <= stimNum * 3) {
+            stimJS += document.getElementById("General_task_table_td_3_0_input").value + ": '" + document.getElementById("General_stim_select_3_" + temp).options[document.getElementById("General_stim_select_3_" + temp).selectedIndex].value + "', ";
+        } else {
+            stimJS += document.getElementById("General_task_table_td_4_0_input").value + ": '" + document.getElementById("General_stim_select_4_" + temp).options[document.getElementById("General_stim_select_4_" + temp).selectedIndex].value + "', ";
+        }
+        stimJS += "Congruent: '" + document.getElementById("General_stim_congruent_select_" + temp).options[document.getElementById("General_stim_congruent_select_" + temp).selectedIndex].value + "' } };\n";
+        addAsset("assets/" + makeStringSafe(document.getElementById("General_stim_file_" + temp).value.split(/(\\|\/)/g).pop()), "image");
     }
     
     /**
