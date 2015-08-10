@@ -321,12 +321,13 @@ function generateArraysJS(name) {
         stimCycleIndex,
         stimCycleCount = 0,
         cueCount = cueNum,
-        taskNumIndex = 1,
+        taskNumIndex = 0,
         taskNum = taskIndex + 1,
         temp;
     
     if (switchesNum > -1) {
         switchCount = trialsNum / (switchesNum + 1);
+        switchIndex = switchCount;
     } else {
         switchCount = trialsNum + 1;
     }
@@ -362,12 +363,22 @@ function generateArraysJS(name) {
             } else {
                 taskNumIndex = 1;
             }
+            stimImagesJS += "cue" + name + (taskNumIndex - 1) + ".image";
+            stimDataJS += "cue" + name + (taskNumIndex - 1) + ".data";
+            answersJS += "0";
+            trialsNum += 1;
+            if (i < trialsNum) {
+                stimImagesJS += ", ";
+                stimDataJS += ", ";
+                answersJS += ", ";
+            }
+            continue;
         }
         switchIndex += 1;
         
         if (cueNum > -1 && cueCount === cueNum) {
-            stimImagesJS += "cue" + name + ".image";
-            stimDataJS += "cue" + name + ".data";
+            stimImagesJS += "cue" + name + "0.image";
+            stimDataJS += "cue" + name + "0.data";
             answersJS += "0";
             cueCount = 0;
             trialsNum += 1;
@@ -716,18 +727,22 @@ function createTest() {
     * Generate JS for cues
     */
     for (i = 0; i < testBlockHeaders.length; i += 1) {
-        if (document.getElementById(testBlockHeaders[i] + "_cue_number")) {
-            cuesJS += "var cue" + testBlockHeaders[i] + " = { image: '";
-            if (document.getElementById(testBlockHeaders[i] + "_cue_image_file")) {
-                addAsset("assets/" + makeStringSafe(document.getElementById(testBlockHeaders[i] + "_cue_image_file").value.split(/(\\|\/)/g).pop()), "image");
-                cuesJS += "<img src=\"assets/" + makeStringSafe(document.getElementById(testBlockHeaders[i] + "_cue_image_file").value.split(/(\\|\/)/g).pop()) + imageScale;
+        for (j = 0; j <= taskIndex; j += 1) {
+            if (document.getElementById(testBlockHeaders[i] + "_cue_never")) {
+                if (document.getElementById(testBlockHeaders[i] + "_cue_never").checked === false) {
+                    cuesJS += "var cue" + testBlockHeaders[i] + j + " = { image: '";
+                    if (document.getElementById(testBlockHeaders[i] + "_cue_" + j + "_image_file")) {
+                        addAsset("assets/" + makeStringSafe(document.getElementById(testBlockHeaders[i] + "_cue_" + j + "_image_file").value.split(/(\\|\/)/g).pop()), "image");
+                        cuesJS += "<img src=\"assets/" + makeStringSafe(document.getElementById(testBlockHeaders[i] + "_cue_" + j + "_image_file").value.split(/(\\|\/)/g).pop()) + imageScale;
+                    }
+                    if (document.getElementById(testBlockHeaders[i] + "_cue_" + j + "_audio_file")) {
+                        addAsset("assets/" + makeStringSafe(document.getElementById(testBlockHeaders[i] + "_cue_" + j + "_audio_file").value.split(/(\\|\/)/g).pop()), "audio");
+                        audioId = getAudioId(makeStringSafe(document.getElementById(testBlockHeaders[i] + "_cue_" + j + "_audio_file").value.split(/(\\|\/)/g).pop()));
+                        cuesJS += "<script>audioContainer.querySelector(\"#a" + audioId + "\").play();</scr' + 'ipt>";
+                    }
+                    cuesJS += "', data: { isACue: true } }; ";
+                }
             }
-            if (document.getElementById(testBlockHeaders[i] + "_cue_audio_file")) {
-                addAsset("assets/" + makeStringSafe(document.getElementById(testBlockHeaders[i] + "_cue_audio_file").value.split(/(\\|\/)/g).pop()), "audio");
-                audioId = getAudioId(makeStringSafe(document.getElementById(testBlockHeaders[i] + "_cue_audio_file").value.split(/(\\|\/)/g).pop()));
-                cuesJS += "<script>audioContainer.querySelector(\"#a" + audioId + "\").play();</scr' + 'ipt>";
-            }
-            cuesJS += "', data: { isACue: true } }; ";
         }
     }
     
