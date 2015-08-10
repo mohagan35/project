@@ -12,10 +12,16 @@ var headers = ["General", "Introduction", "Example", "Practice", "Trials", "Resu
 function checkFileExtension(str, type) {
     "use strict";
     var filename = str.split(/(\\|\/)/g).pop(),
-        ext = filename.substring(filename.length - 4, filename.length),
+        ext,
         i,
         imageExt = [".png", ".PNG", ".jpg", ".JPG"],
         audioExt = [".mp3", ".MP3"];
+    
+    if (str.length > 3) {
+        ext = filename.substring(filename.length - 4, filename.length);
+    } else {
+        return false;
+    }
     
     if (type === "image") {
         for (i = 0; i < imageExt.length; i += 1) {
@@ -246,7 +252,7 @@ function validateForm() {
     */
     if (document.getElementById("General_stim_container")) {
         for (i = 1; i <= getNumberInputValue("General", "stim"); i += 1) {
-            if (document.getElementById("General_stim_file_" + i).value === "") {
+            if (!checkFileExtension(document.getElementById("General_stim_file_" + i).value, "image")) {
                 addHighlight(0, document.getElementById("General_stim_" + i));
             }
         }
@@ -303,6 +309,32 @@ function validateForm() {
             addHighlight(3, document.getElementById("Practice_trial_congruent_container"));
         } else if (getNumberInputValue("Practice", "trial") - getNumberInputValue("Practice", "congruent") > 0 && incongruentCheck === false) {
             addHighlight(3, document.getElementById("Practice_trial_congruent_container"));
+        }
+    }
+    
+    /**
+    * Switching cue image and audio checks
+    */
+    for (i = 0; i <= document.getElementById("General_task_select").selectedIndex; i += 1) {
+        if (document.getElementById("Practice_cue_" + i + "_image_file")) {
+            if (!checkFileExtension(document.getElementById("Practice_cue_" + i + "_image_file").value, "image")) {
+                addHighlight(3, document.getElementById("Practice_cue_" + i + "_image"), document.getElementById("Practice_cue_" + i + "_sub_title"));
+            }
+        }
+        if (document.getElementById("Practice_cue_" + i + "_audio_file")) {
+            if (!checkFileExtension(document.getElementById("Practice_cue_" + i + "_audio_file").value, "audio")) {
+                addHighlight(3, document.getElementById("Practice_cue_" + i + "_audio"), document.getElementById("Practice_cue_" + i + "_sub_title"));
+            }
+        }
+        if (document.getElementById("Trials_cue_" + i + "_image_file")) {
+            if (!checkFileExtension(document.getElementById("Trials_cue_" + i + "_image_file").value, "image")) {
+                addHighlight(4, document.getElementById("Trials_cue_" + i + "_image"), document.getElementById("Trials_cue_" + i + "_sub_title"));
+            }
+        }
+        if (document.getElementById("Trials_cue_" + i + "_audio_file")) {
+            if (!checkFileExtension(document.getElementById("Trials_cue_" + i + "_audio_file").value, "audio")) {
+                addHighlight(4, document.getElementById("Trials_cue_" + i + "_audio"), document.getElementById("Trials_cue_" + i + "_sub_title"));
+            }
         }
     }
     

@@ -361,6 +361,150 @@ function alterTrials(name, typeChanged) {
     }
 }
 
+function appendNext(container, nextElement, nextContainer) {
+    "use strict";
+    var divbreak = document.createElement("div"),
+        divbreak2 = document.createElement("div");
+    
+    divbreak.className = "break";
+    divbreak2.className = "break";
+    
+    if (nextElement && document.getElementById(nextElement.id) === null) {
+        divbreak.id = nextElement.id + "_break";
+        container.appendChild(divbreak);
+        container.appendChild(nextElement);
+    }
+    if (nextContainer && document.getElementById(nextContainer.id) === null) {
+        divbreak2.id = nextContainer.id + "_break";
+        container.appendChild(divbreak2);
+        container.appendChild(nextContainer);
+    }
+}
+
+function cueTypeChanged(name, type) {
+    "use strict";
+    var container = document.getElementById(name + "_container"),
+        task1Container,
+        task2Container,
+        task3Container,
+        task4Container,
+        tasksArray = [],
+        inputContainer = document.getElementById(name + "_cue_container"),
+        nextElement,
+        nextContainer,
+        cueSwitch,
+        cue_image_check = document.getElementById(name + "_cue_image_check"),
+        cue_audio_check = document.getElementById(name + "_cue_audio_check"),
+        i,
+        taskIndex = document.getElementById("General_task_select").selectedIndex,
+        divbreaks = [document.createElement("div"), document.createElement("div"), document.createElement("div"), document.createElement("div")];
+    
+    for (i = 0; i < divbreaks.length; i += 1) {
+        divbreaks[i].className = "minbreak";
+    }
+    
+    if (efSelected === "Switching") {
+        cueSwitch = document.getElementById(name + "_cue_switch");
+    }
+    
+    if (document.getElementById(name + "_task1_container")) {
+        task1Container = document.getElementById(name + "_task1_container");
+    } else {
+        task1Container = createFormElement(name + "_task1", "_container", "container");
+        inputContainer.appendChild(task1Container);
+    }
+    tasksArray.push(task1Container);
+    if (cueSwitch) {
+        if (cueSwitch.checked) {
+            if (taskIndex > 0) {
+                if (document.getElementById(name + "_task2_container")) {
+                    task2Container = document.getElementById(name + "_task2_container");
+                } else {
+                    task2Container = createFormElement(name + "_task2", "_container", "container");
+                    inputContainer.appendChild(task2Container);
+                }
+                tasksArray.push(task2Container);
+            }
+            if (taskIndex > 1) {
+                if (document.getElementById(name + "_task3_container")) {
+                    task3Container = document.getElementById(name + "_task3_container");
+                } else {
+                    task3Container = createFormElement(name + "_task3", "_container", "container");
+                    inputContainer.appendChild(task3Container);
+                }
+                tasksArray.push(task3Container);
+            }
+            if (taskIndex > 2) {
+                if (document.getElementById(name + "_task4_container")) {
+                    task4Container = document.getElementById(name + "_task4_container");
+                } else {
+                    task4Container = createFormElement(name + "_task4", "_container", "container");
+                    inputContainer.appendChild(task4Container);
+                }
+                tasksArray.push(task4Container);
+            }
+        }
+    }
+    
+    if (type === "task") {
+        for (i = 0; i < tasksArray.length; i += 1) {
+            if (document.getElementById(name + "_cue_" + i + "_sub_title")) {
+                document.getElementById(name + "_cue_" + i + "_sub_title").parentNode.replaceChild(createFormElement(name + "_cue_" + i, "_left", "sub_title", "<b>" + document.getElementById("General_task_table_td_" + (i + 1) + "_0_input").value + ": </b>"), document.getElementById(name + "_cue_" + i + "_sub_title"));
+            } else {
+                tasksArray[i].appendChild(createFormElement(name + "_cue_" + i,
+                                                            "_left", "sub_title", "<b>" + document.getElementById("General_task_table_td_" + (i + 1) + "_0_input").value + ": </b>"));
+                divbreaks[i].id = name + "_cue_sub_title_" + i + "_break";
+                tasksArray[i].appendChild(divbreaks[i]);
+            }
+
+            if (cue_image_check.checked === true) {
+                if (document.getElementById(name + "_cue_" + i + "_image") === null) {
+                    tasksArray[i].appendChild(createFormElement(name + "_cue_" + i, "_left", "image"));
+                }
+            }
+            if (cue_audio_check.checked === true) {
+                if (document.getElementById(name + "_cue_" + i + "_audio") === null) {
+                    tasksArray[i].appendChild(createFormElement(name + "_cue_" + i, "_left", "audio"));
+                }
+            }
+        }
+        return;
+    } else {
+        for (i = 0; i < tasksArray.length; i += 1) {
+            if (tasksArray[i].innerHTML === "") {
+                tasksArray[i].appendChild(createFormElement(name + "_cue_" + i,
+                                                            "_left", "sub_title", "<b>" + document.getElementById("General_task_table_td_" + (i + 1) + "_0_input").value + ": </b>"));
+                divbreaks[i].id = name + "_cue_sub_title_" + i + "_break";
+                tasksArray[i].appendChild(divbreaks[i]);
+            }
+
+            if (type === "image") {
+                if (document.getElementById(name + "_cue_" + i + "_image") === null) {
+                    tasksArray[i].appendChild(createFormElement(name + "_cue_" + i, "_left", "image"));
+                } else if (document.getElementById(name + "_cue_" + i + "_audio") === null) {
+                    cue_image_check.checked = true;
+                } else if (cue_image_check.checked === false) {
+                    tasksArray[i].removeChild(document.getElementById(name + "_cue_" + i + "_image"));
+                }
+            } else if (type === "audio") {
+                if (document.getElementById(name + "_cue_" + i + "_audio") === null) {
+                    tasksArray[i].appendChild(createFormElement(name + "_cue_" + i, "_left", "audio"));
+                } else if (document.getElementById(name + "_cue_" + i + "_image") === null) {
+                    cue_audio_check.checked = true;
+                } else if (cue_audio_check.checked === false) {
+                    tasksArray[i].removeChild(document.getElementById(name + "_cue_" + i + "_audio"));
+                }
+            }
+        }
+    }
+    
+    nextElement = createFormElement(name, "", "feedback_prompt");
+    nextContainer = createFormElement(name + "_feedback", "_container", "container");
+    appendNext(container, nextElement, nextContainer);
+    
+    document.getElementById(name + "_cue_type").scrollIntoView();
+}
+
 function taskInput(name, row, col, input) {
     "use strict";
     var calcRow = (parseInt(row, 10) - 1) * 2 + parseInt(col, 10),
@@ -376,8 +520,14 @@ function taskInput(name, row, col, input) {
                 key.innerHTML = "";
             }
         }
+    } else {
+        if (document.getElementById("Practice_cue_0_sub_title")) {
+            cueTypeChanged("Practice", "task");
+        }
+        if (document.getElementById("Trials_cue_0_sub_title")) {
+            cueTypeChanged("Trials", "task");
+        }
     }
-    
     alterStimuli(name, parseInt(row, 10), parseInt(col, 10), input);
     
     if (document.getElementById("Example_trial_number")) {
@@ -498,26 +648,6 @@ function numberPressInput(e, dir, name, type) {
     document.getElementById(name + "_" + type + "_number").scrollIntoView();
 }
 
-function appendNext(container, nextElement, nextContainer) {
-    "use strict";
-    var divbreak = document.createElement("div"),
-        divbreak2 = document.createElement("div");
-    
-    divbreak.className = "break";
-    divbreak2.className = "break";
-    
-    if (nextElement && document.getElementById(nextElement.id) === null) {
-        divbreak.id = nextElement.id + "_break";
-        container.appendChild(divbreak);
-        container.appendChild(nextElement);
-    }
-    if (nextContainer && document.getElementById(nextContainer.id) === null) {
-        divbreak2.id = nextContainer.id + "_break";
-        container.appendChild(divbreak2);
-        container.appendChild(nextContainer);
-    }
-}
-
 function genericInput(name, type) {
     "use strict";
     var container = document.getElementById(name + "_container"),
@@ -619,6 +749,7 @@ function efChanged() {
         divbreak2 = document.createElement("div"),
         divbreak3 = document.createElement("div"),
         cueNames = ["Example", "Practice", "Trials"],
+        taskIndex = document.getElementById("General_task_select").selectedIndex,
         i,
         setSelected = -1,
         nextElement,
@@ -656,12 +787,21 @@ function efChanged() {
                 if (document.getElementById(cueNames[i] + "_switches_number")) {
                     document.getElementById(cueNames[i] + "_switches_number").parentNode.removeChild(document.getElementById(cueNames[i] + "_switches_number"));
                 }
+                
+                if (document.getElementById(cueNames[i] + "_task4_container")) {
+                    document.getElementById(cueNames[i] + "_task4_container").innerHTML = "";
+                }
+                if (document.getElementById(cueNames[i] + "_task3_container")) {
+                    document.getElementById(cueNames[i] + "_task3_container").innerHTML = "";
+                }
+                if (document.getElementById(cueNames[i] + "_task2_container")) {
+                    document.getElementById(cueNames[i] + "_task2_container").innerHTML = "";
+                }
             } else if (efSelected === "Switching") {
                 if (document.getElementById(cueNames[i] + "_trial_container") && document.getElementById(cueNames[i] + "_switches_number") === null) {
                     document.getElementById(cueNames[i] + "_trial_container").appendChild(createNumberInput(cueNames[i], "", "switches"));
                 }
             }
-            
             
             if (document.getElementById(cueNames[i] + "_cue_switch")) {
                 if (document.getElementById(cueNames[i] + "_cue_switch").checked) {
@@ -832,52 +972,6 @@ function instructionsTypeChanged(name, type, pageNum) {
     } else {
         document.getElementById(name + "_instructions_type" + pageAppend).scrollIntoView();
     }
-}
-
-function cueTypeChanged(name, type) {
-    "use strict";
-    var container = document.getElementById(name + "_container"),
-        cue_image,
-        cue_audio,
-        nextElement,
-        nextContainer,
-        divbreak = document.createElement("div"),
-        divbreak2 = document.createElement("div");
-    
-    divbreak.className = "break";
-    divbreak2.className = "break";
-    
-    nextElement = createFormElement(name, "", "feedback_prompt");
-    nextContainer = createFormElement(name + "_feedback", "_container", "container");
-    
-    cue_image = document.getElementById(name + "_cue_image");
-    cue_audio = document.getElementById(name + "_cue_audio");
-            
-    if (type === "image") {
-        if (cue_image !== null) {
-            if (cue_audio !== null) {
-                cue_image.parentNode.removeChild(cue_image);
-            } else {
-                document.getElementById(name + "_cue_image_check").checked = true;
-            }
-        } else if (document.getElementById(name + "_cue_image") === null) {
-            document.getElementById(name + "_cue_type_container").appendChild(createFormElement(name + "_cue", "_center", "image"));
-        }
-    } else if (type === "audio") {
-        if (cue_audio !== null) {
-            if (cue_image !== null) {
-                cue_audio.parentNode.removeChild(cue_audio);
-            } else {
-                document.getElementById(name + "_cue_audio_check").checked = true;
-            }
-        } else if (document.getElementById(name + "_cue_audio") === null) {
-            document.getElementById(name + "_cue_type_container").appendChild(createFormElement(name + "_cue", "_center", "audio"));
-        }
-    }
-    
-    appendNext(container, nextElement, nextContainer);
-    
-    document.getElementById(name + "_cue_type").scrollIntoView();
 }
 
 function promptToggle(name, toggle) {
