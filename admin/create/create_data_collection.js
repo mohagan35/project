@@ -30,9 +30,15 @@ function initializeVars() {
             <script src='js/jspsych/plugins/jspsych-categorize.js'></script> \
             <script src='js/jspsych/plugins/jspsych-text.js'></script> \
             <script src='js/jspsych/plugins/jspsych-instructions.js'></script> \
-            <script>";
+            <script>var ppi; \
+                if (localStorage.getItem('ppi')) { \
+                    ppi = parseFloat(localStorage.getItem('ppi')); \
+                } else { \
+                    ppi = 120; \
+                    alert('PPI setting not found. Using ppi of 120.'); \
+                }";
     html3 = "</script><link href='js/jspsych/css/jspsych.css' rel='stylesheet' type='text/css'></link> \
-            <script>var css = '.jspsych-display-element { width: 1080px; margin: 75px auto 0px auto; text-align: center; }', \
+            <script>var css = '.jspsych-display-element { width:' + (ppi * 9) + 'px; margin: 75px auto 0px auto; text-align: center; }', \
         style = document.createElement('style'); \
     style.type = 'text/css'; \
     style.appendChild(document.createTextNode(css)); \

@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <title>Calibration</title>
+        <script>
+            function setCalibration() {
+                localStorage.setItem("ppi", document.getElementById("imagePixels").value);
+                alert("Settings saved!");
+            }
+            
+            function imagePixelsChanged(input) {
+                document.getElementById("50p").width = input.value * 1.0625;
+                document.getElementById("50p").height = input.value * 1.0625;
+                
+                var angle = Math.atan(window.screen.height / window.screen.width),
+                    width = (window.screen.width / document.getElementById("50p").width) * 1.0625,
+                    diagonal = width / Math.cos(angle);
+                
+                document.getElementById("screenSize").value = diagonal;
+            }
+            
+            function screenSizeChanged(input) {
+                var angle = Math.atan(window.screen.height / window.screen.width),
+                    width = input.value * Math.cos(angle),
+                    ppi = window.screen.width / width;
+                
+                document.getElementById("imagePixels").value = ppi;
+                
+                document.getElementById("50p").width = ppi * 1.0625;
+                document.getElementById("50p").height = ppi * 1.0625;
+            }
+        </script>
+    </head>
+    <body>
+        <p>
+        <div style="margin: 100px 100px 100px 100px">
+            Type in the diagonal length of your screen in inches: <input id='screenSize' type=number value="16.3" onchange="screenSizeChanged(this);" oninput="screenSizeChanged(this);"/>
+            <p><input id="submitbtn" type="button" value="Submit" onclick="setCalibration();"/>
+            <p><br>Don't know? Change the pixels number to match the WIDTH of the below image to a real life 50p coin. <br>
+                If you just have a ruler, a 50p coin is 1 and a 16<sup>th</sup> inches wide from point to point.
+            <p> <input id='imagePixels' type=number value=96 onchange="imagePixelsChanged(this);" oninput="imagePixelsChanged(this);"/>
+            <p> <br><br><img src="50p.jpg" id='50p' width=102 height=102 />
+        </div>
+    </body>
+</html>
