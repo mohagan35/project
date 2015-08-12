@@ -4,7 +4,7 @@
         <script>
             function setCalibration() {
                 localStorage.setItem("ppi", document.getElementById("imagePixels").value);
-                alert("Settings saved!");
+                alert("Setting saved!");
             }
             
             function imagePixelsChanged(input) {
@@ -36,7 +36,7 @@
             Type in the diagonal length of your screen in inches: <input id='screenSize' type=number value="16.3" onchange="screenSizeChanged(this);" oninput="screenSizeChanged(this);"/>
             <p><input id="submitbtn" type="button" value="Submit" onclick="setCalibration();"/>
             <p><br>Don't know? Change the pixels number to match the WIDTH of the below image to a real life 50p coin. <br>
-                If you just have a ruler, a 50p coin is 1 and a 16<sup>th</sup> inches wide from point to point.
+                If you just have a ruler, a 50p coin is 1 and a 16<sup>th</sup> inches (2.7cm) wide from point to point.
             <p> <input id='imagePixels' type=number value=96 onchange="imagePixelsChanged(this);" oninput="imagePixelsChanged(this);"/>
             <p> <br><br><img src="50p.jpg" id='50p' width=102 height=102 />
         </div>
