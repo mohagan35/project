@@ -360,6 +360,27 @@ function alterTrials(name, typeChanged) {
         }
     }
 }
+function alterSeriesTable(n, type) {
+    "use strict";
+    var count = 1,
+        start = 1;
+    
+    if (document.getElementById("General_enter_" + type + "_" + n + "_input")) {
+        while (document.getElementById("General_enter_" + type + "_" + (n + count) + "_input")) {
+            document.getElementById("General_enter_" + type + "_" + (n + count) + "_input").parentNode.removeChild(document.getElementById("General_enter_" + type + "_" + (n + count) + "_input"));
+            count += 1;
+        }
+        count = 1;
+    } else {
+        while (document.getElementById("General_enter_" + type + "_" + start + "_input")) {
+            start += 1;
+        }
+        while (start <= n) {
+            document.getElementById("General_enter_" + type).innerHTML += "<p><input id='General_enter_" + type + "_" + start + "_input' type='text' maxlength='2' onkeydown=\"numberTextInput(event, '" + type + "'," + start + ")\">";
+            start += 1;
+        }
+    }
+}
 
 function appendNext(container, nextElement, nextContainer) {
     "use strict";
@@ -572,6 +593,8 @@ function numberPressInput(e, dir, name, type) {
         minNum = 0;
         maxNum = 10 * parseInt(document.getElementById(name + "_trial_number_left").value, 10) +
                     parseInt(document.getElementById(name + "_trial_number_right").value, 10);
+    } else if (type === "diff_lengths") {
+        minNum = 1;
     }
     
     rightNum = minNum;
@@ -643,6 +666,12 @@ function numberPressInput(e, dir, name, type) {
         }
     } else if (type === "congruent") {
         document.getElementById(name + "_incongruent_sub_title").innerHTML = "<br><br><i>Number of incongruent: " + (maxNum - outputNum) + "</i>";
+    } else if (type === "diff_lengths") {
+        maxLeft = parseInt(outputNum / 10, 10);
+        maxRight = outputNum % 10;
+        tempNum = 10 * maxLeft + maxRight;
+        alterSeriesTable(tempNum, "lengths");
+        alterSeriesTable(tempNum, "frequencies");
     }
     
     document.getElementById(name + "_" + type + "_number").scrollIntoView();
@@ -690,6 +719,38 @@ function genericInput(name, type) {
     
     appendNext(container, nextElement, nextContainer);
     scrollTo.scrollIntoView();
+}
+
+function seriesPrompt() {
+    "use strict";
+    var create_form = document.getElementById("create_form"),
+        divbreak = document.createElement("div"),
+        divbreak2 = document.createElement("div"),
+        introduction_container = createFormElement("Introduction", "_container", "container");
+    
+    divbreak.className = "break";
+    divbreak2.className = "break";
+    
+    if (document.getElementById("General_series_prompt_yes").checked) {
+        if (document.getElementById("General_diff_lengths_number") === null) {
+            document.getElementById("General_series_container").appendChild(createNumberInput("General", "", "diff_lengths"));
+            document.getElementById("General_series_container").appendChild(divbreak);
+            document.getElementById("General_series_container").appendChild(createFormElement("General", "_center", "enter_lengths", 1));
+            document.getElementById("General_series_container").appendChild(createFormElement("General", "_center", "enter_frequencies", 1));
+        }
+    } else if (document.getElementById("General_series_prompt_no").checked && document.getElementById("Introduction_header") === null) {
+        document.getElementById("General_series_container").innerHTML = "";
+        create_form.appendChild(divbreak);
+        create_form.appendChild(createHeader("Introduction"));
+        create_form.appendChild(divbreak2);
+        introduction_container.appendChild(createFormElement("Introduction", "", "instructions_type", "Introduce the test: "));
+        introduction_container.appendChild(createFormElement("Introduction_instructions_type", "_container", "container"));
+        create_form.appendChild(introduction_container);
+    } else if (document.getElementById("General_series_prompt_no").checked) {
+        document.getElementById("General_series_container").innerHTML = "";
+    }
+    
+    document.getElementById("General_series_prompt").scrollIntoView();
 }
 
 function backgroundToggle(name, toggle) {
@@ -744,9 +805,6 @@ function backgroundToggle(name, toggle) {
 function efChanged() {
     "use strict";
     var efSelect = document.getElementById("efSelect"),
-        create_form = document.getElementById("create_form"),
-        divbreak = document.createElement("div"),
-        divbreak2 = document.createElement("div"),
         divbreak3 = document.createElement("div"),
         cueNames = ["Example", "Practice", "Trials"],
         taskIndex = document.getElementById("General_task_select").selectedIndex,
@@ -754,22 +812,12 @@ function efChanged() {
         setSelected = -1,
         nextElement,
         nextContainer,
-        general_container = document.getElementById("General_container"),
-        introduction_container = createFormElement("Introduction", "_container", "container");
+        general_container = document.getElementById("General_container");
     
     efSelected = efSelect.options[efSelect.selectedIndex].value;
     divbreak3.className = "break";
     
-    if (efSelected !== "Select" && document.getElementById("Introduction_container") === null) {
-        divbreak.className = "break";
-        divbreak2.className = "break";
-        create_form.appendChild(divbreak);
-        create_form.appendChild(createHeader("Introduction"));
-        create_form.appendChild(divbreak2);
-        introduction_container.appendChild(createFormElement("Introduction", "", "instructions_type", "Introduce the test: "));
-        introduction_container.appendChild(createFormElement("Introduction_instructions_type", "_container", "container"));
-        create_form.appendChild(introduction_container);
-        
+    if (efSelected !== "Select" && document.getElementById("General_series_prompt") === null) {
         document.getElementById("select_option").parentNode.removeChild(document.getElementById("select_option"));
         
         nextElement = createNumberInput("General", "", "stim");
@@ -778,6 +826,10 @@ function efChanged() {
         nextContainer.appendChild(createFormElement("General", "_center", "stim", "2"));
         nextContainer.appendChild(createFormElement("General", "_center", "stim", "3"));
         nextContainer.appendChild(createFormElement("General", "_center", "stim", "4"));
+        appendNext(general_container, nextElement, nextContainer);
+        
+        nextElement = createFormElement("General", "", "series_prompt");
+        nextContainer = createFormElement("General_series", "_container", "container");
         appendNext(general_container, nextElement, nextContainer);
         
         document.getElementById("efTest").scrollIntoView();

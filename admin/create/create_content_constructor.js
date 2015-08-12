@@ -72,6 +72,8 @@ function createNumberInput(name, align, type) {
         val = 0;
     } else if (type === "cue") {
         element.innerHTML = "Before how many trials should each cue be fired?";
+    } else if (type === "diff_lengths") {
+        element.innerHTML = "How many different series lengths should there be?";
     }
     
     element.innerHTML += "<p><input class='key' id='" + element.id + "_left' type='text' readonly value='0'" +    "onkeypress=\"numberPressInput(event, 'left', '" + name + "', '" + type + "')\">" +
@@ -303,6 +305,24 @@ function createFormElement(name, align, type, str) {
             element.innerHTML = "How long should the " + str + " be shown for?";
         }
         element.innerHTML += "<p><input id='" + name + "_" + type + "_" + str + "_input' type='text' maxlength='4' onkeydown=\"numberTextInput(event)\"> ms";
+        
+    } else if (type === "series_prompt") {
+        element.innerHTML = "Would you like to use stimuli series?" +
+                    "<p>Yes <input type='radio' id='" + element.id + "_yes' name='" + element.id + "' value='yes' onclick=\"seriesPrompt()\">" +
+                    "<p>No <input type='radio' id='" + element.id + "_no' name='" + element.id + "' value='no' onclick=\"seriesPrompt()\">";
+        
+    } else if (type === "enter_lengths") {
+        element.innerHTML = "Enter the possible series lengths: ";
+        for (i = 1; i <= str; i += 1) {
+            element.innerHTML += "<p><input id='" + element.id + "_" + i + "_input' type='text' maxlength='2' onkeydown=\"numberTextInput(event, 'length" + i + "')\">";
+        }
+        
+    } else if (type === "enter_frequencies") {
+        element.innerHTML = "Enter a frequency for each series length: ";
+        for (i = 1; i <= str; i += 1) {
+            element.innerHTML += "<p><input id='" + element.id + "_" + i + "_input' type='text' maxlength='2' onkeydown=\"numberTextInput(event, 'frequency" + i + "')\">";
+        }
+        
     }
     
     return element;
