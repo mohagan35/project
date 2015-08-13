@@ -1,4 +1,5 @@
 /*global alert: true */
+/*global getNumberInputValue: true */
 
 var efSelected = "Select";
 /**
@@ -41,6 +42,34 @@ function createTrial(name, align, index, n) {
                 "<p>Choose an audio file (mp3) to upload: <p><input type='file' id='" + element.id + "_file_" + index + "'>";
 
     element.id += "_" + index;
+    
+    return element;
+}
+
+function createSeries(name, align, length, index) {
+    "use strict";
+    var element = document.createElement("div"),
+        selectStim = document.createElement("select"),
+        selectTask = document.createElement("select"),
+        i;
+    
+    element.className = "form_element" + align;
+    element.id = name + "_series_" + length + "." + index;
+    
+    selectStim.id = name + "_series_select_stim_" + index;
+    selectTask.id = name + "_series_select_task_" + index;
+    
+    for (i = 1; i <= getNumberInputValue("General", "stim"); i += 1) {
+        selectStim.innerHTML += "<option>Stimulus " + i + "</option>";
+    }
+    for (i = 1; i < 5; i += 1) {
+        if (document.getElementById("General_task_table_td_" + i + "_0_input").value !== "") {
+            selectTask.innerHTML += "<option>" + document.getElementById("General_task_table_td_" + i + "_0_input").value + "</option>";
+        }
+    }
+        
+    element.innerHTML = "<b>Series " + length + "." + index + ":</b><br><br>" +
+                "Stimulus: " + selectStim.outerHTML + "<p>Task: " + selectTask.outerHTML;
     
     return element;
 }
@@ -314,13 +343,15 @@ function createFormElement(name, align, type, str) {
     } else if (type === "enter_lengths") {
         element.innerHTML = "Enter the possible series lengths: ";
         for (i = 1; i <= str; i += 1) {
-            element.innerHTML += "<p><input id='" + element.id + "_" + i + "_input' type='text' maxlength='2' onkeydown=\"numberTextInput(event, 'length" + i + "')\">";
+            element.innerHTML += "<p><input id='" + element.id + "_" + i + "_input' type='text' maxlength='2' onkeydown=\"numberTextInput(event, 'length', " + i + ")\"" +
+                " onkeyup=\"addSeries('General', this.value, " + i + ", document.getElementById('General_enter_frequencies_" + i + "_input').value)\" />";
         }
         
     } else if (type === "enter_frequencies") {
         element.innerHTML = "Enter a frequency for each series length: ";
         for (i = 1; i <= str; i += 1) {
-            element.innerHTML += "<p><input id='" + element.id + "_" + i + "_input' type='text' maxlength='2' onkeydown=\"numberTextInput(event, 'frequency" + i + "')\">";
+            element.innerHTML += "<p><input id='" + element.id + "_" + i + "_input' type='text' maxlength='2' onkeydown=\"numberTextInput(event, 'frequencies', " + i + ")\"" +
+                " onkeyup=\"addSeries('General', document.getElementById('General_enter_lengths_" + i + "_input').value, " + i + ", this.value)\" />";
         }
         
     }

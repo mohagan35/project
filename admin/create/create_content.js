@@ -3,6 +3,7 @@
 /*global createFormElement: true */
 /*global createTable: true */
 /*global createTrial: true */
+/*global createSeries: true */
 /*global createNumberInput: true */
 /*global replaceRow: true */
 /*global efSelected: true */
@@ -60,6 +61,65 @@ function addHeader(name) {
             container.appendChild(createFormElement(name + "_instructions_type", "_container", "container"));
         }
         create_form.appendChild(container);
+    }
+}
+
+function appendNext(container, nextElement, nextContainer) {
+    "use strict";
+    var divbreak = document.createElement("div"),
+        divbreak2 = document.createElement("div");
+    
+    divbreak.className = "break";
+    divbreak2.className = "break";
+    
+    if (nextElement && document.getElementById(nextElement.id) === null) {
+        divbreak.id = nextElement.id + "_break";
+        container.appendChild(divbreak);
+        container.appendChild(nextElement);
+    }
+    if (nextContainer && document.getElementById(nextContainer.id) === null) {
+        divbreak2.id = nextContainer.id + "_break";
+        container.appendChild(divbreak2);
+        container.appendChild(nextContainer);
+    }
+}
+
+function addSeries(name, length, index, n) {
+    "use strict";
+    var i,
+        container;
+    
+    if (document.getElementById("General_series_stim_" + index + "_container") === null) {
+        document.getElementById("General_series_stim_container").appendChild(createFormElement("General_series_stim_" + index, "_container", "container"));
+    }
+    
+    container = document.getElementById("General_series_stim_" + index + "_container");
+    if (length || n) {
+        if (length === "" || length === '0') {
+            document.getElementById("General_series_stim_" + index + "_container").innerHTML = "";
+            return;
+        } else if (n === "" || n === '0') {
+            document.getElementById("General_series_stim_" + index + "_container").innerHTML = "";
+            return;
+        }
+    }
+    if (!n || !length) {
+        return;
+    } else {
+        n = parseInt(n, 10);
+        length = parseInt(length, 10);
+    }
+    
+    i = n + 1;
+    while (document.getElementById(name + "_series_" + length + "." + i)) {
+        document.getElementById(name + "_series_" + length + "." + i).parentNode.removeChild(document.getElementById(name + "_series_" + length + "." + i));
+        i += 1;
+    }
+    
+    for (i = 1; i <= n; i += 1) {
+        if (document.getElementById(name + "_series_" + length + "." + i) === null) {
+            container.appendChild(createSeries("General", "", length, i));
+        }
     }
 }
 
@@ -194,18 +254,32 @@ function folderInput(name, e) {
         }
     }
 }
-function numberTextInput(e) {
+function numberTextInput(e, type, index) {
     "use strict";
     var keynum,
         i,
+        j,
         allowedKeys = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
                        96, 97, 98, 99, 100, 101, 102, 103, 104, 105,
-                       8, 9, 37, 38, 39, 40, 45, 46 ];
+                       9, 37, 38, 39, 40, 45, 46 ];
+    
+    if (type === "length" || "frequencies") {
+        if (document.getElementById("General_series_stim_container") === null) {
+            appendNext(document.getElementById("General_series_container"), createFormElement("General_series_stim", "_container", "container"));
+        }
+    }
     
     if (window.event) { // IE					
         keynum = e.keyCode;
     } else if (e.which) { // Netscape/Firefox/Opera					
         keynum = e.which;
+    }
+    
+    if (keynum === 8) {
+        event.returnValue = false;
+        if (document.getElementById("General_enter_" + type + "_" + index + "_input").value.length > 0) {
+            document.getElementById("General_enter_" + type + "_" + index + "_input").value = document.getElementById("General_enter_" + type + "_" + index + "_input").value.substr(0, document.getElementById("General_enter_" + type + "_" + index + "_input").value.length - 1);
+        }
     }
     
     for (i = 0; i < allowedKeys.length; i += 1) {
@@ -379,26 +453,6 @@ function alterSeriesTable(n, type) {
             document.getElementById("General_enter_" + type).innerHTML += "<p><input id='General_enter_" + type + "_" + start + "_input' type='text' maxlength='2' onkeydown=\"numberTextInput(event, '" + type + "'," + start + ")\">";
             start += 1;
         }
-    }
-}
-
-function appendNext(container, nextElement, nextContainer) {
-    "use strict";
-    var divbreak = document.createElement("div"),
-        divbreak2 = document.createElement("div");
-    
-    divbreak.className = "break";
-    divbreak2.className = "break";
-    
-    if (nextElement && document.getElementById(nextElement.id) === null) {
-        divbreak.id = nextElement.id + "_break";
-        container.appendChild(divbreak);
-        container.appendChild(nextElement);
-    }
-    if (nextContainer && document.getElementById(nextContainer.id) === null) {
-        divbreak2.id = nextContainer.id + "_break";
-        container.appendChild(divbreak2);
-        container.appendChild(nextContainer);
     }
 }
 
