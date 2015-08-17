@@ -64,6 +64,31 @@ function addHeader(name) {
     }
 }
 
+function selectRange(input, start, end) {
+    "use strict";
+    if (!end) {
+        end = start;
+    }
+    if (input.setSelectionRange) {
+        input.focus();
+        input.setSelectionRange(start, end);
+    } else if (input.createTextRange) {
+        var range = input.createTextRange();
+        range.collapse(true);
+        range.moveEnd('character', end);
+        range.moveStart('character', start);
+        range.select();
+    }
+}
+function removeSelect(input) {
+    "use strict";
+
+    setTimeout(function () {
+        selectRange(input, 0, 0);
+        selectRange(input, input.value.length);
+    }, 10);
+}
+
 function appendNext(container, nextElement, nextContainer) {
     "use strict";
     var divbreak = document.createElement("div"),
@@ -254,19 +279,22 @@ function folderInput(name, e) {
         }
     }
 }
-function numberTextInput(e, type, index) {
+function numberTextInput(e, type, length, index, n) {
     "use strict";
     var keynum,
         i,
         j,
+        lengthElement,
+        nElement,
         allowedKeys = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
                        96, 97, 98, 99, 100, 101, 102, 103, 104, 105,
-                       9, 37, 38, 39, 40, 45, 46 ];
+                       8, 9, 37, 38, 39, 40, 45, 46 ];
     
-    if (type === "length" || "frequencies") {
-        if (document.getElementById("General_series_stim_container") === null) {
-            appendNext(document.getElementById("General_series_container"), createFormElement("General_series_stim", "_container", "container"));
-        }
+    if (length) {
+        lengthElement = document.getElementById(length);
+    }
+    if (n) {
+        nElement = document.getElementById(n);
     }
     
     if (window.event) { // IE					
@@ -275,20 +303,58 @@ function numberTextInput(e, type, index) {
         keynum = e.which;
     }
     
-    if (keynum === 8) {
+    if (type === "lengths" || "frequencies") {
+        if (document.getElementById("General_series_stim_container") === null) {
+            appendNext(document.getElementById("General_series_container"), createFormElement("General_series_stim", "_container", "container"));
+        }
+    }
+    
+    if (keynum === 8 && (type === "lengths" || "frequencies")) {
         event.returnValue = false;
+        if (lengthElement.value.length === 2) {
+            j = 1;
+            while (document.getElementById("General_series_" + lengthElement.value + "." + j)) {
+                document.getElementById("General_series_" + lengthElement.value + "." + j).parentNode.removeChild(document.getElementById("General_series_" + lengthElement.value + "." + j));
+                j += 1;
+            }
+        }
         if (document.getElementById("General_enter_" + type + "_" + index + "_input").value.length > 0) {
             document.getElementById("General_enter_" + type + "_" + index + "_input").value = document.getElementById("General_enter_" + type + "_" + index + "_input").value.substr(0, document.getElementById("General_enter_" + type + "_" + index + "_input").value.length - 1);
         }
+        addSeries("General", lengthElement.value, index, nElement.value);
+        return;
     }
     
     for (i = 0; i < allowedKeys.length; i += 1) {
         if (keynum === allowedKeys[i]) {
-            event.returnValue = true;
+            if (type === "lengths" || "frequencies") {
+                if (isCharacter(keynum) === false && nElement && lengthElement) {
+                    addSeries("General", lengthElement.value, index, nElement.value);
+                } else if (nElement && lengthElement) {
+                    if (type === "lengths" && lengthElement.value.length < 2) {
+                        addSeries("General", lengthElement.value + keycodeToASCII(keynum), index, nElement.value);
+                        if (lengthElement.value.length === 1) {
+                            j = 1;
+                            while (document.getElementById("General_series_" + lengthElement.value + "." + j)) {
+                                document.getElementById("General_series_" + lengthElement.value + "." + j).parentNode.removeChild(document.getElementById("General_series_" + lengthElement.value + "." + j));
+                                j += 1;
+                            }
+                        }
+                    } else if (type === "frequencies" && nElement.value.length < 2) {
+                        addSeries("General", lengthElement.value, index, nElement.value + keycodeToASCII(keynum));
+                    }
+                }
+            }
             return;
         }
     }
     event.returnValue = false;
+}
+function numberTextInputHandler(type, length, index, n) {
+    "use strict";
+    return function (event) {
+        numberTextInput(event, type, length, index, n);
+    };
 }
 
 function alterStimuli(name, row, col, input) {
@@ -436,12 +502,16 @@ function alterTrials(name, typeChanged) {
 }
 function alterSeriesTable(n, type) {
     "use strict";
-    var count = 1,
+    var inputElement,
+        count = 1,
         start = 1;
     
     if (document.getElementById("General_enter_" + type + "_" + n + "_input")) {
         while (document.getElementById("General_enter_" + type + "_" + (n + count) + "_input")) {
             document.getElementById("General_enter_" + type + "_" + (n + count) + "_input").parentNode.removeChild(document.getElementById("General_enter_" + type + "_" + (n + count) + "_input"));
+            if (document.getElementById("General_series_stim_" + (n + count) + "_container")) {
+                document.getElementById("General_series_stim_" + (n + count) + "_container").parentNode.removeChild(document.getElementById("General_series_stim_" + (n + count) + "_container"));
+            }
             count += 1;
         }
         count = 1;
@@ -450,7 +520,25 @@ function alterSeriesTable(n, type) {
             start += 1;
         }
         while (start <= n) {
-            document.getElementById("General_enter_" + type).innerHTML += "<p><input id='General_enter_" + type + "_" + start + "_input' type='text' maxlength='2' onkeydown=\"numberTextInput(event, '" + type + "'," + start + ")\">";
+            if (type === "lengths") {
+                document.getElementById("General_enter_" + type).appendChild(document.createElement("p"));
+                inputElement = document.createElement("input");
+                inputElement.id = "General_enter_" + type + "_" + start + "_input";
+                inputElement.type = "text";
+                inputElement.maxLength = 2;
+                inputElement.value = "";
+                inputElement.addEventListener("keydown", numberTextInputHandler('lengths', inputElement.id, start, "General_enter_frequencies_" + start + "_input"));
+                document.getElementById("General_enter_" + type).appendChild(inputElement);
+            } else if (type === "frequencies") {
+                document.getElementById("General_enter_" + type).appendChild(document.createElement("p"));
+                inputElement = document.createElement("input");
+                inputElement.id = "General_enter_" + type + "_" + start + "_input";
+                inputElement.type = "text";
+                inputElement.maxLength = 2;
+                inputElement.value = "";
+                inputElement.addEventListener("keydown", numberTextInputHandler('frequencies', "General_enter_lengths_" + start + "_input", start, inputElement.id));
+                document.getElementById("General_enter_" + type).appendChild(inputElement);
+            }
             start += 1;
         }
     }

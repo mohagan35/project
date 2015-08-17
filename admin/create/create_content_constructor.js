@@ -343,15 +343,13 @@ function createFormElement(name, align, type, str) {
     } else if (type === "enter_lengths") {
         element.innerHTML = "Enter the possible series lengths: ";
         for (i = 1; i <= str; i += 1) {
-            element.innerHTML += "<p><input id='" + element.id + "_" + i + "_input' type='text' maxlength='2' onkeydown=\"numberTextInput(event, 'length', " + i + ")\"" +
-                " onkeyup=\"addSeries('General', this.value, " + i + ", document.getElementById('General_enter_frequencies_" + i + "_input').value)\" />";
+            element.innerHTML += "<p><input id='" + element.id + "_" + i + "_input' type='text' maxlength='2' onkeydown=\"numberTextInput(event, 'lengths', this.id, " + i + ", 'General_enter_frequencies_" + i + "_input')\" onfocus=\"removeSelect(this);\" />";
         }
         
     } else if (type === "enter_frequencies") {
         element.innerHTML = "Enter a frequency for each series length: ";
         for (i = 1; i <= str; i += 1) {
-            element.innerHTML += "<p><input id='" + element.id + "_" + i + "_input' type='text' maxlength='2' onkeydown=\"numberTextInput(event, 'frequencies', " + i + ")\"" +
-                " onkeyup=\"addSeries('General', document.getElementById('General_enter_lengths_" + i + "_input').value, " + i + ", this.value)\" />";
+            element.innerHTML += "<p><input id='" + element.id + "_" + i + "_input' type='text' maxlength='2' onkeydown=\"numberTextInput(event, 'frequencies', 'General_enter_lengths_" + i + "_input', " + i + ", this.id)\" onfocus=\"removeSelect(this);\" />";
         }
         
     }
