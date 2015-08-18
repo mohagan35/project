@@ -143,7 +143,7 @@ function addSeries(name, length, index, n) {
     
     for (i = 1; i <= n; i += 1) {
         if (document.getElementById(name + "_series_" + length + "." + i) === null) {
-            container.appendChild(createSeries("General", "", length, i));
+            container.appendChild(createSeries("General", "_left", length, i));
         }
     }
 }
@@ -500,6 +500,42 @@ function alterTrials(name, typeChanged) {
         }
     }
 }
+function alterSeries(name, typeChanged) {
+    "use strict";
+    var i,
+        j,
+        k,
+        select,
+        selectedOption,
+        length,
+        seriesN = getNumberInputValue(name, "diff_lengths"),
+        selectTask;
+    
+    if (typeChanged === "task") {
+        for (i = 1; i <= seriesN; i += 1) {
+            if (document.getElementById("General_series_stim_" + i + "_container")) {
+                for (k = 1; k <= document.getElementById("General_series_stim_" + i + "_container").childElementCount; k += 1) {
+                    length = parseInt(document.getElementById("General_enter_lengths_" + i + "_input").value, 10);
+                    selectTask = document.getElementById(name + "_series_select_task_" + length + "." + k);
+                    try {
+                        selectedOption = selectTask.options[selectTask.selectedIndex].value;
+                    } catch (e) {}
+                    selectTask.innerHTML = "";
+
+                    for (j = 1; j < 5; j += 1) {
+                        if (document.getElementById("General_task_table_td_" + j + "_0_input").value !== "") {
+                            selectTask.innerHTML += "<option>" + document.getElementById("General_task_table_td_" + j + "_0_input").value + "</option>";
+                        }
+                    }
+
+                    try {
+                        selectTask.value =  selectedOption;
+                    } catch (eT) {}
+                }
+            }
+        }
+    }
+}
 function alterSeriesTable(n, type) {
     "use strict";
     var inputElement,
@@ -696,6 +732,9 @@ function taskInput(name, row, col, input) {
     if (document.getElementById("Example_trial_number")) {
         alterTrials("Example", "task");
     }
+    if (document.getElementById("General_series_stim_1_container")) {
+        alterSeries("General", "task");
+    }
 }
 function numberPressInput(e, dir, name, type) {
     "use strict";
@@ -868,10 +907,12 @@ function seriesPrompt() {
     var create_form = document.getElementById("create_form"),
         divbreak = document.createElement("div"),
         divbreak2 = document.createElement("div"),
+        divbreak3 = document.createElement("div"),
         introduction_container = createFormElement("Introduction", "_container", "container");
     
     divbreak.className = "break";
     divbreak2.className = "break";
+    divbreak3.className = "break";
     
     if (document.getElementById("General_series_prompt_yes").checked) {
         if (document.getElementById("General_diff_lengths_number") === null) {
@@ -879,6 +920,13 @@ function seriesPrompt() {
             document.getElementById("General_series_container").appendChild(divbreak);
             document.getElementById("General_series_container").appendChild(createFormElement("General", "_center", "enter_lengths", 1));
             document.getElementById("General_series_container").appendChild(createFormElement("General", "_center", "enter_frequencies", 1));
+            
+            create_form.appendChild(divbreak3);
+            create_form.appendChild(createHeader("Introduction"));
+            create_form.appendChild(divbreak2);
+            introduction_container.appendChild(createFormElement("Introduction", "", "instructions_type", "Introduce the test: "));
+            introduction_container.appendChild(createFormElement("Introduction_instructions_type", "_container", "container"));
+            create_form.appendChild(introduction_container);
         }
     } else if (document.getElementById("General_series_prompt_no").checked && document.getElementById("Introduction_header") === null) {
         document.getElementById("General_series_container").innerHTML = "";

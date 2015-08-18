@@ -49,27 +49,38 @@ function createTrial(name, align, index, n) {
 function createSeries(name, align, length, index) {
     "use strict";
     var element = document.createElement("div"),
-        selectStim = document.createElement("select"),
+        selectStims = [],
+        selectStim,
         selectTask = document.createElement("select"),
-        i;
+        i,
+        j;
     
     element.className = "form_element" + align;
     element.id = name + "_series_" + length + "." + index;
     
-    selectStim.id = name + "_series_select_stim_" + index;
-    selectTask.id = name + "_series_select_task_" + index;
+    selectTask.id = name + "_series_select_task_" + length + "." + index;
     
-    for (i = 1; i <= getNumberInputValue("General", "stim"); i += 1) {
-        selectStim.innerHTML += "<option>Stimulus " + i + "</option>";
+    element.innerHTML = "<b>Series " + length + "." + index + ":</b><br><br>Stimuli: ";
+    
+    for (i = 1; i <= parseInt(length, 10); i += 1) {
+        selectStim = document.createElement("select");
+        selectStim.id = name + "_series_select_stim_" + index + "_" + i;
+        selectStims.push(selectStim);
+        
+        for (j = 1; j <= getNumberInputValue("General", "stim"); j += 1) {
+            selectStim.innerHTML += "<option>Stimulus " + j + "</option>";
+        }
+        
+        element.innerHTML += selectStim.outerHTML + " ";
     }
+    
     for (i = 1; i < 5; i += 1) {
         if (document.getElementById("General_task_table_td_" + i + "_0_input").value !== "") {
             selectTask.innerHTML += "<option>" + document.getElementById("General_task_table_td_" + i + "_0_input").value + "</option>";
         }
     }
         
-    element.innerHTML = "<b>Series " + length + "." + index + ":</b><br><br>" +
-                "Stimulus: " + selectStim.outerHTML + "<p>Task: " + selectTask.outerHTML;
+    element.innerHTML += "<p>Task: " + selectTask.outerHTML;
     
     return element;
 }
