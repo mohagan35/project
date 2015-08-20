@@ -248,6 +248,20 @@ function validateForm() {
     }
     
     /**
+    * Stimuli series table checks
+    */
+    if (document.getElementById("General_series_prompt_yes").checked) {
+        for (i = 1; i <= getNumberInputValue("General", "diff_lengths"); i += 1) {
+            if (document.getElementById("General_enter_lengths_" + i + "_input").value === "") {
+                addHighlight(0, document.getElementById("General_enter_lengths_" + i + "_input"));
+            }
+            if (document.getElementById("General_enter_frequencies_" + i + "_input").value === "") {
+                addHighlight(0, document.getElementById("General_enter_frequencies_" + i + "_input"));
+            }
+        }
+    }
+    
+    /**
     * Stimuli image checks
     */
     if (document.getElementById("General_stim_container")) {

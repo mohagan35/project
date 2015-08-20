@@ -64,7 +64,7 @@ function createSeries(name, align, length, index) {
     
     for (i = 1; i <= parseInt(length, 10); i += 1) {
         selectStim = document.createElement("select");
-        selectStim.id = name + "_series_select_stim_" + index + "_" + i;
+        selectStim.id = name + "_series_select_stim_" + length + "." + index + "_" + i;
         selectStims.push(selectStim);
         
         for (j = 1; j <= getNumberInputValue("General", "stim"); j += 1) {

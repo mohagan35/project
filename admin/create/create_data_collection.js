@@ -1,5 +1,6 @@
 /*jslint es5: true */
 /*global Blob: true */
+/*global console: true */
 /*jslint continue: true */
 
 var keyChoices,
@@ -27,6 +28,7 @@ function initializeVars() {
             <script src='js/jquery.js'></script> \
             <script src='js/jspsych/jspsych.js'></script> \
             <script src='js/jspsych/plugins/jspsych-single-stim.js'></script> \
+            <script src='js/jspsych/plugins/jspsych-multi-stim-multi-response.js'></script> \
             <script src='js/jspsych/plugins/jspsych-categorize.js'></script> \
             <script src='js/jspsych/plugins/jspsych-text.js'></script> \
             <script src='js/jspsych/plugins/jspsych-instructions.js'></script> \
@@ -306,10 +308,104 @@ function generateTestBlock(name) {
     return str;
 }
 
+function generateSeriesTestBlock(name) {
+    "use strict";
+    var str,
+        audioId,
+        stimTime = 1000,
+        feedbackTime = 1000;
+    
+    if (document.getElementById(name + "_response_time_feedback_input")) {
+        feedbackTime = parseInt(document.getElementById(name + "_response_time_feedback_input").value, 10);
+    }
+    if (document.getElementById(name + "_response_time_stimuli_input")) {
+        stimTime = parseInt(document.getElementById(name + "_response_time_stimuli_input").value, 10);
+    }
+    
+    if (document.getElementById(name + "_feedback_none").checked) {
+        str = "var " + name + "_test_block = {" +
+                                "type: 'multi-stim-multi-response'," +
+                                "stimuli: stimSeries" + name + "Images," +
+                                "data: stimSeries" + name + "Data," +
+                                "choices: [" + keyChoices[0] + ", " + keyChoices[1] + "]," +
+                                //"correct_text: '', incorrect_text: ''," +
+                                "is_html: true," +
+                                "timing_response: " + stimTime + "," +
+                                "timing_feedback_duration: 1," +
+                                "show_stim_with_feedback: false," +
+                                "timing_stim: " + stimTime + " };\n";
+        
+    } else {
+        str = "var " + name + "_test_block = {" +
+            "type: 'categorize'," +
+            "stimuli: stim" + name + "Images," +
+            "key_answer: answers" + name + "," +
+            "text_answer: ''," +
+            "data: stim" + name + "Data," +
+            "choices: [" + keyChoices[0] + ", " + keyChoices[1] + "],";
+        
+        if (document.getElementById(name + "_feedback_correct").checked) {
+            str += "correct_text: '";
+            if (document.getElementById(name + "_feedback_audio_check").checked) {
+                addAsset("assets/" + makeStringSafe(document.getElementById(name + "_feedback_correct_audio_file").value.split(/(\\|\/)/g).pop()), "audio");
+                audioId = getAudioId(makeStringSafe(document.getElementById(name + "_feedback_correct_audio_file").value.split(/(\\|\/)/g).pop()));
+                str += "<script>audioContainer.querySelector(\"#a" + audioId + "\").play();</scr' + 'ipt>";
+            }
+            if (document.getElementById(name + "_feedback_image_check").checked) {
+                str += "<img src=\"assets/" + makeStringSafe(document.getElementById(name + "_feedback_correct_image_file").value.split(/(\\|\/)/g).pop()) + imageScaleF;
+                addAsset("assets/" + makeStringSafe(document.getElementById(name + "_feedback_correct_image_file").value.split(/(\\|\/)/g).pop()), "image");
+            }
+            str += "', ";
+        } else {
+            str += "correct_text: '', ";
+        }
+        
+        if (document.getElementById(name + "_feedback_incorrect").checked) {
+            str += "incorrect_text: '";
+            if (document.getElementById(name + "_feedback_audio_check").checked) {
+                addAsset("assets/" + makeStringSafe(document.getElementById(name + "_feedback_incorrect_audio_file").value.split(/(\\|\/)/g).pop()), "audio");
+                audioId = getAudioId(makeStringSafe(document.getElementById(name + "_feedback_incorrect_audio_file").value.split(/(\\|\/)/g).pop()));
+                str += "<script>audioContainer.querySelector(\"#a" + audioId + "\").play();</scr' + 'ipt>";
+            }
+            if (document.getElementById(name + "_feedback_image_check").checked) {
+                str += "<img src=\"assets/" + makeStringSafe(document.getElementById(name + "_feedback_incorrect_image_file").value.split(/(\\|\/)/g).pop()) + imageScaleF;
+                addAsset("assets/" + makeStringSafe(document.getElementById(name + "_feedback_incorrect_image_file").value.split(/(\\|\/)/g).pop()), "image");
+            }
+            str += "',";
+        } else {
+            str += "incorrect_text: '', ";
+        }
+        
+        if (document.getElementById(name + "_feedback_slow").checked) {
+            str += "timeout_message: '";
+            if (document.getElementById(name + "_feedback_audio_check").checked) {
+                addAsset("assets/" + makeStringSafe(document.getElementById(name + "_feedback_slow_audio_file").value.split(/(\\|\/)/g).pop()), "audio");
+                audioId = getAudioId(makeStringSafe(document.getElementById(name + "_feedback_slow_audio_file").value.split(/(\\|\/)/g).pop()));
+                str += "<script>audioContainer.querySelector(\"#a" + audioId + "\").play();</scr' + 'ipt>";
+            }
+            if (document.getElementById(name + "_feedback_image_check").checked) {
+                str += "<img src=\"assets/" + makeStringSafe(document.getElementById(name + "_feedback_slow_image_file").value.split(/(\\|\/)/g).pop()) + imageScaleF;
+                addAsset("assets/" + makeStringSafe(document.getElementById(name + "_feedback_slow_image_file").value.split(/(\\|\/)/g).pop()), "image");
+            }
+            str += "',";
+        } else {
+            str += "timeout_message: '<b></b>', ";
+        }
+        
+        str += "is_html: true," +
+                "timing_feedback_duration: " + feedbackTime + "," +
+                "timing_response: " + stimTime + "," +
+                "timing_stim: " + stimTime + " };\n";
+    }
+    
+    return str;
+}
+
 function generateArraysJS(name) {
     "use strict";
     var i,
         j,
+        k,
         cueNum = getNumberInputValue(name, "cue"),
         trialsNum = getNumberInputValue(name, "trial"),
         congruentNum = getNumberInputValue(name, "congruent"),
@@ -323,6 +419,8 @@ function generateArraysJS(name) {
         stimImagesJS = "var stim" + name + "Images = [",
         stimDataJS = "var stim" + name + "Data = [",
         answersJS = "var answers" + name + " = [",
+        stimSeriesImagesJS = "var stimSeries" + name + "Images = [",
+        stimSeriesDataJS = "var stimSeries" + name + "Data = [",
         congruencyRatio = incongruentNum / trialsNum,
         stimCycleIndex,
         stimCycleCount = 0,
@@ -336,6 +434,7 @@ function generateArraysJS(name) {
         switchIndex = switchCount;
     } else {
         switchCount = trialsNum + 1;
+        taskNumIndex = 1;
     }
     
     for (i = 1; i <= stimNum; i += 1) {
@@ -440,7 +539,32 @@ function generateArraysJS(name) {
     stimDataJS += "];\n";
     answersJS += "];\n";
     
-    return [stimImagesJS, stimDataJS, answersJS];
+    if (document.getElementById("General_series_prompt_yes").checked) {
+        for (i = 1; i <= getNumberInputValue("General", "diff_lengths"); i += 1) {
+            for (j = 1; j <= document.getElementById("General_series_stim_" + i + "_container").childElementCount; j += 1) {
+                stimSeriesImagesJS += "[";
+                stimSeriesDataJS += "[";
+                for (k = 1; k <= parseInt(document.getElementById("General_enter_lengths_" + i + "_input").value, 10); k += 1) {
+                    stimSeriesImagesJS += "stim" + (document.getElementById("General_series_select_stim_" + parseInt(document.getElementById("General_enter_lengths_" + i + "_input").value, 10) + "." + j + "_" + k).selectedIndex + 1) + ".image";
+                    stimSeriesDataJS += "stim" + (document.getElementById("General_series_select_stim_" + parseInt(document.getElementById("General_enter_lengths_" + i + "_input").value, 10) + "." + j + "_" + k).selectedIndex + 1) + ".data";
+                    if (k < parseInt(document.getElementById("General_enter_lengths_" + i + "_input").value, 10)) {
+                        stimSeriesImagesJS += ",";
+                        stimSeriesDataJS += ",";
+                    }
+                }
+                stimSeriesImagesJS += "]";
+                stimSeriesDataJS += "]";
+                if (j < document.getElementById("General_series_stim_" + i + "_container").childElementCount) {
+                    stimSeriesImagesJS += ",";
+                    stimSeriesDataJS += ",";
+                }
+            }
+        }
+    }
+    stimSeriesImagesJS += "];\n";
+    stimSeriesDataJS += "];\n";
+    
+    return [stimImagesJS, stimDataJS, answersJS, stimSeriesImagesJS, stimSeriesDataJS];
 }
 
 function generateExampleTestBlock() {
@@ -578,6 +702,8 @@ function createTest() {
         answersJS = "",
         stimImagesJS = "",
         stimDataJS = "",
+        stimSeriesImagesJS = "",
+        stimSeriesDataJS = "",
         blocksJS = "var blocks = [Introduction_introduction_block, ",
         introBlockJS,
         practiceIntroBlockJS,
@@ -681,20 +807,33 @@ function createTest() {
     if (document.getElementById("Practice_prompt_yes").checked) {
         blocksJS += "Practice_introduction_block, Practice_test_block, ";
         practiceIntroBlockJS = generateIntroBlock("Practice");
-        practiceBlockJS = generateTestBlock("Practice");
+        
+        if (document.getElementById("General_series_prompt_yes").checked === false) {
+            practiceBlockJS = generateTestBlock("Practice");
+        } else {
+            practiceBlockJS = generateSeriesTestBlock("Practice");
+        }
         temp = generateArraysJS("Practice");
         stimImagesJS += temp[0];
         stimDataJS += temp[1];
         answersJS += temp[2];
+        stimSeriesImagesJS += temp[3];
+        stimSeriesDataJS += temp[4];
     }
     
     blocksJS += "Trials_introduction_block, Trials_test_block, ";
-    testBlockJS = generateTestBlock("Trials");
+    if (document.getElementById("General_series_prompt_yes").checked === false) {
+        testBlockJS = generateTestBlock("Trials");
+    } else {
+        testBlockJS = generateSeriesTestBlock("Trials");
+    }
     trialsIntroBlockJS = generateIntroBlock("Trials");
     temp = generateArraysJS("Trials");
     stimImagesJS += temp[0];
     stimDataJS += temp[1];
     answersJS += temp[2];
+    stimSeriesImagesJS += temp[3];
+    stimSeriesDataJS += temp[4];
     
     blocksJS += "Submit_introduction_block];";
     
@@ -762,7 +901,7 @@ function createTest() {
     /**
     * Create the complete JS code
     */
-    outputJS = pagesJS + pagesArrayJS + stimJS + cuesJS + stimImagesJS + stimDataJS + answersJS + introBlockJS;
+    outputJS = pagesJS + pagesArrayJS + stimJS + cuesJS + stimImagesJS + stimDataJS + answersJS + stimSeriesImagesJS  + stimSeriesDataJS + introBlockJS;
     if (exampleBlockJS !== undefined) {
         outputJS += exampleIntroBlockJS + exampleBlockJS;
     }
