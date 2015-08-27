@@ -995,20 +995,28 @@ function backgroundToggle(name, toggle) {
 function efChanged() {
     "use strict";
     var efSelect = document.getElementById("efSelect"),
+        divbreak = document.createElement("div"),
+        divbreak2 = document.createElement("div"),
         divbreak3 = document.createElement("div"),
+        create_form = document.getElementById("create_form"),
         cueNames = ["Example", "Practice", "Trials"],
         taskIndex = document.getElementById("General_task_select").selectedIndex,
         i,
         setSelected = -1,
         nextElement,
         nextContainer,
-        general_container = document.getElementById("General_container");
+        general_container = document.getElementById("General_container"),
+        introduction_container = createFormElement("Introduction", "_container", "container");
     
     efSelected = efSelect.options[efSelect.selectedIndex].value;
+    divbreak.className = "break";
+    divbreak2.className = "break";
     divbreak3.className = "break";
     
     if (efSelected !== "Select" && document.getElementById("General_series_prompt") === null) {
-        document.getElementById("select_option").parentNode.removeChild(document.getElementById("select_option"));
+        if (document.getElementById("select_option")) {
+            document.getElementById("select_option").parentNode.removeChild(document.getElementById("select_option"));
+        }
         
         nextElement = createNumberInput("General", "", "stim");
         nextContainer = createFormElement("General_stim", "_container", "container");
@@ -1018,9 +1026,16 @@ function efChanged() {
         nextContainer.appendChild(createFormElement("General", "_center", "stim", "4"));
         appendNext(general_container, nextElement, nextContainer);
         
-        nextElement = createFormElement("General", "", "series_prompt");
+        create_form.appendChild(divbreak);
+        create_form.appendChild(createHeader("Introduction"));
+        create_form.appendChild(divbreak2);
+        introduction_container.appendChild(createFormElement("Introduction", "", "instructions_type", "Introduce the test: "));
+        introduction_container.appendChild(createFormElement("Introduction_instructions_type", "_container", "container"));
+        create_form.appendChild(introduction_container);
+        
+        /*nextElement = createFormElement("General", "", "series_prompt");
         nextContainer = createFormElement("General_series", "_container", "container");
-        appendNext(general_container, nextElement, nextContainer);
+        appendNext(general_container, nextElement, nextContainer);*/
         
         document.getElementById("efTest").scrollIntoView();
     } else {

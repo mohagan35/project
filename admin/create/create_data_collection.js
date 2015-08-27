@@ -327,13 +327,13 @@ function generateSeriesTestBlock(name) {
                                 "type: 'multi-stim-multi-response'," +
                                 "stimuli: stimSeries" + name + "Images," +
                                 "data: stimSeries" + name + "Data," +
-                                "choices: [" + keyChoices[0] + ", " + keyChoices[1] + "]," +
-                                //"correct_text: '', incorrect_text: ''," +
+                                "choices: [[" + keyChoices[0] + ", " + keyChoices[1] + "]]," +
+                                "correct_text: 'Yay', incorrect_text: 'Boo'," +
                                 "is_html: true," +
-                                "timing_response: " + stimTime + "," +
+                                "timing_response: [" + stimTime + "]," +
                                 "timing_feedback_duration: 1," +
                                 "show_stim_with_feedback: false," +
-                                "timing_stim: " + stimTime + " };\n";
+                                "timing_stim: [" + stimTime + "] };\n";
         
     } else {
         str = "var " + name + "_test_block = {" +
@@ -808,11 +808,12 @@ function createTest() {
         blocksJS += "Practice_introduction_block, Practice_test_block, ";
         practiceIntroBlockJS = generateIntroBlock("Practice");
         
-        if (document.getElementById("General_series_prompt_yes").checked === false) {
+        /*if (document.getElementById("General_series_prompt_yes").checked === false) {
             practiceBlockJS = generateTestBlock("Practice");
         } else {
             practiceBlockJS = generateSeriesTestBlock("Practice");
-        }
+        }*/
+        practiceBlockJS = generateTestBlock("Practice"); //To be commented out if above is added
         temp = generateArraysJS("Practice");
         stimImagesJS += temp[0];
         stimDataJS += temp[1];
@@ -822,12 +823,13 @@ function createTest() {
     }
     
     blocksJS += "Trials_introduction_block, Trials_test_block, ";
-    if (document.getElementById("General_series_prompt_yes").checked === false) {
+    /*if (document.getElementById("General_series_prompt_yes").checked === false) {
         testBlockJS = generateTestBlock("Trials");
     } else {
         testBlockJS = generateSeriesTestBlock("Trials");
-    }
+    }*/
     trialsIntroBlockJS = generateIntroBlock("Trials");
+    testBlockJS = generateTestBlock("Trials");//To be commented out if above is added
     temp = generateArraysJS("Trials");
     stimImagesJS += temp[0];
     stimDataJS += temp[1];
