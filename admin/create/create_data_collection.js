@@ -539,7 +539,7 @@ function generateArraysJS(name) {
     stimDataJS += "];\n";
     answersJS += "];\n";
     
-    if (document.getElementById("General_series_prompt_yes").checked) {
+    /*if (document.getElementById("General_series_prompt_yes").checked) {
         for (i = 1; i <= getNumberInputValue("General", "diff_lengths"); i += 1) {
             for (j = 1; j <= document.getElementById("General_series_stim_" + i + "_container").childElementCount; j += 1) {
                 stimSeriesImagesJS += "[";
@@ -560,7 +560,7 @@ function generateArraysJS(name) {
                 }
             }
         }
-    }
+    }*/
     stimSeriesImagesJS += "];\n";
     stimSeriesDataJS += "];\n";
     
